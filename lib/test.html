@@ -27,6 +27,7 @@
     }
 
     .building {
+
       font-weight: 500;
       color: rgb(68, 146, 248);
       font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
@@ -35,6 +36,7 @@
     }
 
     .unitid {
+
       font-weight: 500;
       text-transform: uppercase;
       color: rgb(22, 188, 230);
@@ -46,10 +48,22 @@
       padding-left: 10px;
       padding-right: 10px;
       line-height: 22px;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
     }
 
+    .mcus {
+      text-align: left;
+      color: darkkhaki;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+      border: 0.1rem solid rgb(133, 142, 148);
+    
+    }
     .location {
+
       margin-bottom: 10px;
       line-height: 25px;
       display: block;
@@ -58,6 +72,7 @@
       color: rgb(22, 188, 230);
       font-size: 1rem;
       font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+      letter-spacing: 1.5px;
     }
 
     .bulb {
@@ -73,15 +88,27 @@
       font-weight: 500;
       text-transform: uppercase;
       color: rgb(211, 211, 39);
-      text-align: start;
+      text-align: center;
       display: block;
       font-size: 1rem;
       font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+      letter-spacing: 1.2px;
+    }
+
+    .rxID {
+      color: darkorange;
+      letter-spacing: 1.3px;
+    }
+
+    .rxtime {
+      font-size: .8rem;
+      letter-spacing: 1.3px;
+      color: darkorange;
     }
 
     .uptime {
       padding: 5px;
-      text-align: start;
+      text-align: center;
       border: 0.1rem solid rgb(133, 142, 148);
       font-weight: 500;
       text-transform: uppercase;
@@ -104,13 +131,13 @@
     }
 
     .card {
+
       border: outset 5px rgb(43, 64, 66);
       max-width: auto;
       display: inline-block;
       margin-top: 20px;
       padding: 15px;
-      box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5);
-
+      box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5)
     }
 
     .switch {
@@ -162,47 +189,53 @@
 
 <body>
 
-  <div class="card">
-
-    <span class="building"> BUILDING A</span><br>
-
-    <span class="unitid">Garage 1<br>Light 1 of 4</span>
-    <span class="location">Light next to water heaters</span>
-
-    <span id="unit1"> <label class="switch">
-
-        <input type="checkbox" onchange="toggleCheckbox(this)" id="12">
-        <span class="slider"></span></label></span>
-
-    <span class="bulb" id="bulb">&#x23F1</span>
-
-    <span class="pockets" id="traffic">msg id: 55 tx: group <br>Last Msg: fail</span>
-    <span class="uptime" id="status">uptime: 360 days,23 hours,33 minutes</span>
-    <span class="unitinfo">IP: 192.168.10.18<br>Mac: 50:02:91:67:F9:96<br>Host: bldgA-1-v2-garage1-1of4-433rx</span>
-
+  <div class='card'><span class='building'> BUILDING A</span><br><span class='unitid'>garage1<br>2 of 4</span><span
+      class='location'>Middle Light</span><span id='unit2'><label class='switch'><input type='checkbox'
+          onchange='toggleCheckbox(this)' id='12'><span class='slider'></span></label></span><span class='bulb'
+      id='bulb'>&#x23F1</span><span class='pockets' id='traffic'>garage1 - 1 of 4 <br> 192.168.10.15<br> <span
+        id='pocketid' class='rxID'>6</span> <br><span id='new_command' class='rxID'>alarm1 </span> <br> <span
+        id='rxtimestamp' class='rxtime'>2-1-2022 </span> </span><span class='unitinfo'> IP: 192.168.10.94<br>Mac:
+      C8:2B:96:08:D2:35<br>ID: bldgA-2-v2-garage1-2of4-switch</span><span class='uptime' id='status'>1 minute</span>
+        <ol id='mculist' class='mcus'>
+        <li>Garage1 - 1 of 4</li>
+        <li>Garage2 - 1 of 6</li>
+        <li>Lobby - 1 of 3</li>
+        <li>Courtyard 1 of 5</li>
+        <li>Entrance 1 of 5</li>
+        </ol>
   </div>
 
-  <script>function toggleCheckbox(element) {
+  <script>
+
+    function toggleCheckbox(element) {
       var xhr = new XMLHttpRequest();
       if (element.checked) {
         xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true); light = document.getElementById('bulb');
         light.innerHTML = "&#x1F4A1"
-
       }
       else {
         xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=0", true); light = document.getElementById('bulb');
         light.innerHTML = "&#x23F1"
-
       }
       xhr.send();
     }
 
+
+     // Sort list of units
+    function sortList(ol) {
+      var ul = document.getElementById(ol);
+
+          Array.from(ol.getElementsByTagName("LI"))
+            .sort((a, b) => a.textContent.localeCompare(b.textContent))
+            .forEach(li => ol.appendChild(li));
+      }
+
     function getDateTime() {
 
-     
       var currentdate = new Date();
-      var datetime = currentdate.getDate() + "/"
-        + (currentdate.getMonth() + 1) + "/"
+      var datetime =
+        (currentdate.getMonth() + 1 + "/"
+          + currentdate.getDate()) + "/"
         + currentdate.getFullYear() + " at "
         + currentdate.getHours() + ":"
         + currentdate.getMinutes() + ":"
@@ -212,7 +245,6 @@
     }
 
     if (!!window.EventSource) {
-
       var source = new EventSource('/events');
 
       source.addEventListener('open', function (e) {
@@ -223,6 +255,7 @@
           console.log("Events Disconnected");
         }
       }, false);
+
 
       if (!!window.EventSource) {
         var source = new EventSource('/events');
@@ -240,20 +273,45 @@
           console.log("message", e.data);
         }, false);
 
-        source.addEventListener('new_readings', function (e) {
-          console.log("new_readings", e.data);
+        source.addEventListener('updatetime', function (e) {
+          console.log("Updating local system running time", e.data);
+          document.getElementById("localUptime").innerHTML = obj.localtime;
+
+          }, false);
+
+
+        source.addEventListener('updatetime', function (e) {
+          
+          console.log("Updating local system running time", e.data);
+          document.getElementById("localUptime").innerHTML = obj.operating;
+
+        }, false);
+
+        source.addEventListener('new_command', function (e) {
+          console.log("new_command", e.data);
           var obj = JSON.parse(e.data);
-          document.getElementById("t" + obj.id).innerHTML = obj.temperature.toFixed(2);
-          document.getElementById("h" + obj.id).innerHTML = obj.humidity.toFixed(2);
-          document.getElementById("rt" + obj.id).innerHTML = getDateTime();
-          document.getElementById("rh" + obj.id).innerHTML = getDateTime();
+
+          document.getElementById("new_command").innerHTML = obj.new_command;
+          document.getElementById("rxtimestamp").innerHTML = getDateTime();
+          document.getElementById("pocketid").innerHTML = obj.pocketid;
+
+          var inputs = document.getElementsByTagName("input");
+          for(var i = 0; i < inputs.length; i++) {
+              if(inputs[i].type == "checkbox") {
+                  inputs[i].checked = true; 
+              }  
+          }
+
+          sortList("mculist");
+          window.totalUnitsInList = document.getElementById("ul_o").getElementsByTagName("li").length;
+          console.log("Total units list: " + window.totalUnitsInList);
+
         }, false);
       }
+
+
     }
-
   </script>
-
-
 </body>
 
 </html>

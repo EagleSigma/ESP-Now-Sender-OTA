@@ -6,6 +6,7 @@
   #include <AsyncElegantOTA.h>
   #include <Adafruit_NeoPixel.h>
   #include <espnow.h>
+  #include <Arduino_JSON.h>
 
   #define DEBUG 1
 
@@ -26,16 +27,18 @@
   const char *appassword = "buildingA";
   const char *binVersion = "v2";
 
-  // Web server
+  // Web server & JSon Events
+  JSONVar board;
   AsyncWebServer server(80);
+  AsyncEventSource events("/events");
+
 
 // ESP Now
-  #define BOARD 1
+  #define BOARD 2
 // Board Id
   #define NEOPIXEL 0
 
   #if BOARD == 1
-    int boardNumber = 1;
     const char *networkName = "bldgA";
     const char *serviceArea = "garage1";
     const char *serviceLocation = "Light next to water heaters";
@@ -46,7 +49,6 @@
     //Private MAC address so another board can handle the same request
 
   #elif BOARD == 2
-    int boardNumber = 2;
     const char *networkName = "bldgA";
     const char *serviceArea = "garage1";
     const char *serviceLocation = "Middle Light";
@@ -101,6 +103,9 @@
   unsigned millisBlinkUpdate = 0;
 
   #endif
+  
+// ESP Now Commands
+  const char *alarmEvents[8] = {"lightOn", "lightOff", "motionDetected", "alarm1", "alarm2","alarm3", "alarm5", "alarm5"};
 
   const unsigned int alertLevel[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
   unsigned int currentAlert = 0;
@@ -110,15 +115,17 @@
   unsigned int rxPacketCounter = 0;
   unsigned long espNowinterval = 10000;
   unsigned long espNowpreviousMillis = 0;
-  unsigned long millisUptime = false;
+  unsigned long millisUptime = 0;
+  unsigned long millisEventsPing = 0;
 
-  // Pocket Definition
+ // Pocket Definition
     typedef struct struct_message
     {
       bool broadcast; // Delay between sending two ESPNOW data, unit: ms.
       int unitd;
       char unitname[30];
-      unsigned int packetid;
+      char ip[15];
+      uint8_t packetid;
       char event[20];
       char data[20];
       char operating[30];
@@ -137,8 +144,8 @@
 
     char newhostname[100];
     char greeting[100];
-    char unitD[100];
-    char uptime[100];
+    char unitD[10];
+    char uptime[50];
     unsigned long uptimePreviousMillis = 0;
 
      // Uptime
@@ -159,9 +166,27 @@
 
 /* #region [Functions]  */
 
+
+  // Events Ping
+  void EventsPing(unsigned int updateInterval)
+  {
+    // Calculate Uptime
+    if (millis() >= (millisEventsPing + updateInterval) && millis()!=millisEventsPing )
+    {
+
+      char pingMsg[20];
+      strcpy(pingMsg, "Ping #: ");
+      strcat(pingMsg, String(millis()/1000).c_str());
+      events.send(pingMsg,NULL,millis());
+      millisEventsPing = millis();
+
+    }
+  }
+
   // Uptime
   void RunningTime(unsigned int updateInterval)
   {
+
     // Calculate Uptime
     if (millis() >= (millisUptime + updateInterval) && millis()!=millisUptime )
     {
@@ -223,7 +248,7 @@
         strcpy(uptime, hrs.c_str());
         strcat(uptime, hours > 1 ? " hours" : " hour");
 
-        strcat(uptime, ",");
+        strcat(uptime, ", ");
 
         strcat(uptime, mins.c_str());
         strcat(uptime, minutes > 1 ? " minutes" : " minute");
@@ -254,6 +279,12 @@
 
       }
 
+      // Create Json object
+      JSONVar osTime;
+      osTime["localTime"] = uptime;
+      String jsonString = JSON.stringify(osTime);
+      events.send(jsonString.c_str(), "updatetime", millis());
+    
       Debugln("Uptime: ");
       Debugln(uptime);
     }
@@ -559,8 +590,29 @@
   // Callback when data is received
   void OnDataRecv(uint8_t *mac, uint8_t *incomingData, uint8_t len)
   {
-
+    
+    // Copy Incoming message to Data Stuct for access
     memcpy(&incomingMsg, incomingData, sizeof(incomingMsg));
+    
+    // Create Json object
+    board["id"] = incomingMsg.unitd;
+    board["new_command"] = incomingMsg.event;
+    board["pocketid"] = incomingMsg.packetid;
+    board["uptime"] = incomingMsg.operating;
+    board["msgsize"] = len;
+
+
+    String jsonString = JSON.stringify(board);
+
+    events.send(jsonString.c_str(), "new_command", millis());
+
+    // Get the Mac 
+    char macStr[18];
+    Debug("Packet received from: ");
+    snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
+            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+    Debugln(macStr);
+
     Debug("Pocket size: " );
     Debugln(len);
     PrintIncomingData();
@@ -591,16 +643,20 @@
             max-width: 600px;
             margin: 0px auto;
             padding-bottom: 25px;
+            background:rgb(27, 30, 31);
         }
 
         .building {
+
             font-weight: 500;
             color: rgb(68, 146, 248);
             font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
             font-size: 1.3rem;
+            letter-spacing: 1px;
         }
 
         .unitid {
+
             font-weight: 500;
             text-transform: uppercase;
             color: rgb(22, 188, 230);
@@ -612,23 +668,26 @@
             padding-left: 10px;
             padding-right: 10px;
             line-height: 22px;
+            letter-spacing: 1.5px;
         }
 
         .location {
+
             margin-bottom: 10px;
             line-height: 25px;
             display: block;
-            font-weight: 500;
+            font-weight: 400;
             text-transform: uppercase;
             color: rgb(22, 188, 230);
             font-size: 1rem;
             font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            letter-spacing: 1.5px;
         }
 
         .bulb {
             display: block;
             text-align: center;
-            font-size: 2.8rem;
+            font-size: 3.8rem;
             margin-bottom: 5px;
         }
         .pockets {
@@ -636,28 +695,32 @@
             border: 0.1rem solid rgb(133, 142, 148);
             font-weight: 500;
             text-transform: uppercase;
-            color: darkcyan;
-            background-color: rgb(236, 230, 230);
-            text-align: start;
+            color: rgb(211, 211, 39);
+            text-align: center;
             display: block;
             font-size: 1rem;
             font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
         }
+        .rxID {
+            color: darkorange;
+        }
+        .rxtime{
+            font-size: .8rem; letter-spacing: 1.2px; color: darkorange;
+        }
         .uptime {
             padding: 5px;
-            text-align: start;
+            text-align: center;
             border: 0.1rem solid rgb(133, 142, 148);
             font-weight: 500;
             text-transform: uppercase;
-            color: darkslategrey;
-            background-color: rgb(236, 230, 230);
+            color: rgb(27, 189, 140);
             display: block;
             font-size: 1rem;
             font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
         }
 
         .unitinfo {
-            text-align: start;
+            text-align: center;
             border: 0.1rem solid rgb(133, 142, 148);
             display: block;
             font-weight: 500;
@@ -668,10 +731,23 @@
             font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
         }
 
+        .mcus {
+            text-align: left;
+            color: darkkhaki;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            border: 0.1rem solid rgb(133, 142, 148);
+          
+          }
+
         .card {
+
+            border: outset 5px rgb(43, 64, 66);
             max-width: auto;
             display: inline-block;
-            background-color: white;
             margin-top: 20px;
             padding: 15px;
             box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5)
@@ -695,7 +771,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
+            background-color: rgb(243, 188, 188);
             border-radius: 34px
         }
 
@@ -706,7 +782,7 @@
             width: 42px;
             left: 8px;
             bottom: 8px;
-            background-color: #fff;
+            background-color: rgb(15, 108, 131);
             -webkit-transition: .4s;
             transition: .4s;
             border-radius: 48px
@@ -714,7 +790,7 @@
         }
 
         input:checked+.slider {
-            background-color: #2196F3
+            background-color: #21f3d0
         }
 
         input:checked+.slider:before {
@@ -728,16 +804,165 @@
           
               %MCUINFO%
           
-          <script>function toggleCheckbox(element) {
-            var xhr = new XMLHttpRequest();
-            if(element.checked){ xhr.open("GET", "/relayupdate?relay="+element.id+"&state=1", true);  light = document.getElementById('bulb');
-            light.innerHTML = "&#x1F4A1"}
-            else { xhr.open("GET", "/relayupdate?relay="+element.id+"&state=0", true);  light = document.getElementById('bulb');
-            light.innerHTML = "&#x23F1"}
-            xhr.send();
-          }</script>
+          <script>
+            
+            function relayControm(element) {
+
+              var xhr = new XMLHttpRequest();
+              if(element.checked) { 
+                xhr.open("GET", "/relayupdate?relay="+element.id+"&state=1", true);  
+                light = document.getElementById('bulb');
+                light.innerHTML = "&#x1F4A1";
+                console.log("MCU Relay on remote");
+              }
+              else { 
+                xhr.open("GET", "/relayupdate?relay="+element.id+"&state=0", true);  
+                light = document.getElementById('bulb');
+                light.innerHTML = "&#x23F1";
+                console.log("MCU Relay off remote");
+              }
+
+              xhr.send();
+
+            }
+
+
+            function toggleCheckbox(element) {
+              var xhr = new XMLHttpRequest();
+              if(element.checked) { 
+                
+                xhr.open("GET", "/relayupdate?relay="+element.id+"&state=1", true);  
+              
+                light = document.getElementById('bulb');
+                light.innerHTML = "&#x1F4A1";
+                console.log("MCU Relay on");
+
+              }
+              else { 
+                
+                xhr.open("GET", "/relayupdate?relay="+element.id+"&state=0", true);  
+              
+                light = document.getElementById('bulb');
+                light.innerHTML = "&#x23F1";
+                console.log("MCU Relay off");
+              }
+
+                xhr.send();
+          }
+
+          function sortList(ol) {
+
+              var checkListCount = document.getElementById("mculist").getElementsByTagName("li").length;
+              if (checkListCount==window.totalUnitsInList){
+                console.log("MCU List NOT sorted");
+                return;
+              }
+
+              var ol = document.getElementById(ol);
+
+              Array.from(ol.getElementsByTagName("LI"))
+                .sort((a, b) => a.textContent.localeCompare(b.textContent))
+                .forEach(li => ol.appendChild(li));
+
+              console.log("MCU List sorted");
+          }
+
+        function getDateTime() {
+
+          var currentdate = new Date();
+          var datetime = 
+            (currentdate.getMonth() + 1 + "/"
+            +  currentdate.getDate() ) + "/"
+            + currentdate.getFullYear() + " at "
+            + currentdate.getHours() + ":"
+            + currentdate.getMinutes() + ":"
+            + currentdate.getSeconds();
+          return datetime;
+
+        }
+
+    if (!!window.EventSource) {
+      var source = new EventSource('/events');
+
+      source.addEventListener('open', function (e) {
+        console.log("Events Connected");
+      }, false);
+      source.addEventListener('error', function (e) {
+        if (e.target.readyState != EventSource.OPEN) {
+          console.log("Events Disconnected");
+        }
+      }, false);
+
+      if (!!window.EventSource) {
+        var source = new EventSource('/events');
+
+        source.addEventListener('open', function (e) {
+          console.log("Events Connected");
+        }, false);
+        source.addEventListener('error', function (e) {
+          if (e.target.readyState != EventSource.OPEN) {
+            console.log("Events Disconnected");
+          }
+        }, false);
+
+        source.addEventListener('message', function (e) {
+          console.log("message", e.data);
+        }, false);
+
+        
+        source.addEventListener('updatetime', function (e) {
+          console.log("Updating local up time", e.data);
+          var obj = JSON.parse(e.data);
+          document.getElementById("localUptime").innerHTML = obj.localTime;
+
+          }, false);
+
+
+        source.addEventListener('new_command', function (e) {
+          console.log("new_command", e.data);
+          var obj = JSON.parse(e.data);
+
+          document.getElementById("new_command").innerHTML = obj.new_command;
+          document.getElementById("rxtimestamp").innerHTML = getDateTime();
+          document.getElementById("pocketid").innerHTML = obj.pocketid + " - " + obj.msgsize;
+          
+          // Control the Relay Based on the command received
+          if(obj.new_command=='lightOn'){
+
+            var inputs = document.getElementsByTagName("input");
+            for(var i = 0; i < inputs.length; i++) {
+                if(inputs[i].type == "checkbox") {
+                    inputs[i].checked = true;
+                    relayControm(inputs[i]);
+                    console.log("Turning relay on command");
+                }  
+            }
+
+          }else if (obj.new_command=='lightOff'){
+
+              var inputs = document.getElementsByTagName("input");
+              for(var i = 0; i < inputs.length; i++) {
+                  if(inputs[i].type == "checkbox") {
+                      inputs[i].checked = false;
+                      relayControm(inputs[i]);
+                      console.log("Turning relay off command");
+                  }  
+              }
+
+          }
+
+          sortList("mculist");
+          window.totalUnitsInList = document.getElementById("mculist").getElementsByTagName("li").length;
+
+          
+        }, false);
+      }
+    }
+          </script>
           </body></html>
         )rawliteral";
+
+  //
 
   String relayState(int numRelay)
   {
@@ -793,19 +1018,25 @@
 
           // Relay Control        
           String relayStateValue = relayState(i);
-          buttons += "<span id='unit"+String(boardNumber) + "'><label class='switch'><input type='checkbox' onchange='toggleCheckbox(this)' id='" + String(relayGPIOs[i - 1]) + "'" + relayStateValue + "><span class='slider'></span></label></span>";
-        
+          buttons += "<span id='unit"+String(BOARD) + "'><label class='switch'><input type='checkbox' onchange='toggleCheckbox(this)' id='" + String(relayGPIOs[i - 1]) + "'" + relayStateValue + "><span class='slider'></span></label></span>";
           buttons += "<span class='bulb' id='bulb'>&#x23F1</span>";
-          
-          // Communication Monitor
-          buttons += "<span class='pockets' id='traffic'>"  + String(incomingMsg.unitname) + " - Msg #: " +  String(txPacketCounter) +  "<br>" + "Command: " + String(incomingMsg.event) + " - Group: " + String(incomingMsg.broadcast) + "</span>";
-          
-          // Unit Info and Uptime
-            buttons += "<span class='unitinfo'> IP: " + WiFi.localIP().toString() +  "<br>Mac: " + String(WiFi.macAddress().c_str()) + "<br>Host: " + String(newhostname) + "</span>";
-            buttons += "<span class='uptime' id='status'Uptime:>" + String(uptime) + "</span>";
-            buttons += " </div>";        
 
       }
+
+      // Unit Traffic
+          buttons += "<span class='pockets' id='traffic'>"  + String(incomingMsg.unitname) + " <br> " + String(incomingMsg.ip) + "<br> <span id='pocketid' class='rxID' >" +  String(txPacketCounter) +  "</span> <br>"  + "<span id='new_command' class='rxID' >" + String(incomingMsg.event) + " </span> <br> <span id='rxtimestamp' class='rxtime'>  </span> </span>";
+          
+      // Unit Info
+          buttons += "<span class='unitinfo'>" + WiFi.localIP().toString() +  "<br>" + String(WiFi.macAddress().c_str()) + "<br>" + String(newhostname) + "</span>";
+      
+      // Unit Uptime
+          buttons += "<span class='uptime' id='localUptime'>" + String(uptime) +  "</span>";
+      
+      // Add MCU List
+      buttons += "<ol id='mculist' class='mcus'> <li>Garage1 - 1 of 4</li> <li>Garage2 - 1 of 6</li><li>Lobby - 1 of 3</li><li>Courtyard 1 of 5</li><li>Entrance 1 of 5</li></ol>";
+
+      // Closing Tag for Card
+          buttons += " </div>";        
 
       return buttons;
     }
@@ -835,7 +1066,7 @@
     pinMode(LED_BUILTIN, OUTPUT);
   #endif
 
-    // Initialize Relays
+  // Initialize Relays
     pinMode(relayGPIOs[NUM_RELAYS - 1], OUTPUT);
 
     // Enable WIFI -- MAC: C8:2B:96:08:D2:35
@@ -845,7 +1076,7 @@
     // Set new hostname
     strcpy(newhostname, networkName);
     strcat(newhostname, "-");
-    String bn = String(boardNumber);
+    String bn = String(BOARD);
     strcat(newhostname, bn.c_str());
     strcat(newhostname, "-");
     strcat(newhostname, binVersion);
@@ -896,15 +1127,12 @@
     strcat(greeting, " - ");
     strcat(greeting, WiFi.localIP().toString().c_str());
 
-    // Start Web Server and ElegantOTA
+  // ElegantOTA
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(200, "text/plain", greeting); });
 
     AsyncElegantOTA.begin(&server, "twin", "peaks");
-    server.begin();
-    Debugln("HTTP server started");
 
-    // Web Server
     // Web WIFI Scan
     server.on("/scan", HTTP_GET, [](AsyncWebServerRequest *request)
               {
@@ -986,7 +1214,25 @@
 
     // End of Web Server
 
-    // Enable ESP Now
+// Web Events
+    events.onConnect([](AsyncEventSourceClient *client){
+
+    if(client->lastId()){
+      Serial.printf("Client reconnected! Last message ID that it got is: %u\n", client->lastId());
+    }
+    // send event with message "hello!", id current millis
+    // and set reconnect delay to 1 second
+    client->send("hello!", NULL, millis(), 10000);
+    });
+
+    // Event handler
+    server.addHandler(&events);
+
+  // Start Web Server
+    server.begin();
+    Debugln("HTTP server started");
+
+  // Enable ESP Now
     if (esp_now_init() != 0)
     {
       Debugln("Error initializing ESP-NOW");
@@ -1015,10 +1261,14 @@
 /* #region [Loop]  */
   void loop()
   {
-    // Uptime
+
+  // Events Ping
+    EventsPing(30000);
+
+  // Uptime
     RunningTime(60000);
 
-    // ESP-Now Pocket transmission
+  // ESP-Now Pocket transmission
     if ((millis() - espNowpreviousMillis) >= espNowinterval)
     {
 
@@ -1026,26 +1276,25 @@
       outgoingMsg.unitd = BOARD;
       outgoingMsg.delay = 2000;
       outgoingMsg.broadcast = false;
-      
-      String unitname = String(serviceArea);
+      outgoingMsg.packetid=txPacketCounter;
+      // WiFi.localIP().toString() 
 
-      strcpy(outgoingMsg.unitname, unitname.c_str());
+      strcpy(outgoingMsg.ip, WiFi.localIP().toString().c_str());
+
+      strcpy(outgoingMsg.unitname, String(serviceArea).c_str());
       strcat(outgoingMsg.unitname, " - ");
 
       String unitNumber = String(BOARD);
       strcat(outgoingMsg.unitname, unitNumber.c_str());
       strcat(outgoingMsg.unitname, " of ");
-
       strcat(outgoingMsg.unitname, totalDevicesInServiceArea);
-      
+
       outgoingMsg.packetid = txPacketCounter;
 
-      
-      strcpy(outgoingMsg.event, "lightOn");
       int randomNumber = random(1, 100);
+      strcpy(outgoingMsg.event, alarmEvents[random(0,7)]);
       strcpy(outgoingMsg.data, "Sunset - ");
       strcat(outgoingMsg.data, String(randomNumber).c_str());
-
       strcpy(outgoingMsg.operating,uptime);
 
       // Send message via ESP-NOW
@@ -1062,12 +1311,12 @@
       Debugln(millis() / 1000);
     }
 
-    // Neopixel Control
-  #if NEOPIXEL == 1
-    NeoPixel();
-  #elif NEOPIXEL == 0
-    blinkBuiltInLED(955);
-  #endif
+  // Neopixel Control
+    #if NEOPIXEL == 1
+      NeoPixel();
+    #elif NEOPIXEL == 0
+      blinkBuiltInLED(955);
+    #endif
 
   /* #endregion */
 }
