@@ -1,5 +1,6 @@
 #include "SPIFFSEditor.h"
-#include <FS.h>
+//#include <FS.h>
+#include <LittleFS.h>
 
 //File: edit.htm.gz, Size: 4151
 #define edit_htm_gz_len 4151
