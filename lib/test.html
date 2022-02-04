@@ -5,63 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset=â€œUTF-8â€>
   <style>
-    html {
-      font-family: Arial;
-      display: inline-block;
-      text-align: center;
-    }
-
-    h2 {
-      font-size: 3.0rem;
-    }
-
-    p {
-      font-size: 3.0rem;
-    }
-
     body {
-      max-width: 600px;
-      margin: 0px auto;
-      padding-bottom: 25px;
       background: rgb(27, 30, 31);
-    }
-
-    .building {
-
-      font-weight: 500;
-      color: rgb(68, 146, 248);
-      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-      font-size: 1.3rem;
-      letter-spacing: 1px;
     }
 
     .unitid {
 
       font-weight: 500;
       text-transform: uppercase;
-      color: rgb(22, 188, 230);
+      color: rgb(68, 146, 248);
       font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       text-align: center;
       display: block;
-      padding-top: 5px;
       padding-left: 10px;
       padding-right: 10px;
       line-height: 22px;
       letter-spacing: 1.5px;
     }
 
-    .mcus {
-      text-align: left;
-      color: darkkhaki;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      font-size: 1rem;
-      letter-spacing: 1px;
-      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-      border: 0.1rem solid rgb(133, 142, 148);
-    
-    }
     .location {
 
       margin-bottom: 10px;
@@ -83,33 +45,47 @@
     }
 
     .pockets {
+      letter-spacing: 1px;
       padding: 5px;
-      border: 0.1rem solid rgb(133, 142, 148);
+      border: 5px outset rgb(33, 63, 70);
       font-weight: 500;
       text-transform: uppercase;
       color: rgb(211, 211, 39);
       text-align: center;
       display: block;
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-      letter-spacing: 1.2px;
     }
 
     .rxID {
+      letter-spacing: 1.5px;
       color: darkorange;
-      letter-spacing: 1.3px;
     }
 
     .rxtime {
-      font-size: .8rem;
-      letter-spacing: 1.3px;
-      color: darkorange;
+      font-size: 1.1rem;
+      letter-spacing: 1.2px;
+      color: rgb(216, 119, 0);
+    }
+
+    .unitinfo {
+      margin-top: 10px;
+      text-align: center;
+      border: 5px outset rgb(33, 67, 70);
+      display: block;
+      font-weight: 500;
+      padding: 10px;
+      text-transform: uppercase;
+      color: rgb(17, 108, 235);
+      font-size: 1.1rem;
+      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
     }
 
     .uptime {
+      margin-top: 10px;
       padding: 5px;
       text-align: center;
-      border: 0.1rem solid rgb(133, 142, 148);
+      border: 5px outset rgb(33, 67, 70);
       font-weight: 500;
       text-transform: uppercase;
       color: rgb(27, 189, 140);
@@ -118,33 +94,66 @@
       font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
     }
 
-    .unitinfo {
+    .mcus {
+
+      margin-top: 10px;
+      padding-left: 40px;
+      padding-right: 10px;
       text-align: start;
-      border: 0.1rem solid rgb(133, 142, 148);
-      display: block;
-      font-weight: 500;
-      padding: 10px;
       text-transform: uppercase;
-      color: rgb(17, 108, 235);
+    
+      padding-top: 10px;
+      padding-bottom: 10px;
       font-size: 1rem;
+      letter-spacing: 1px;
       font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+      border: 5px outset rgb(33, 67, 70);
+
     }
 
-    .card {
+    .mculist {
 
+        padding-bottom: 10px;
+        color: darkkhaki;
+        white-space: pre-line;
+        text-align: left;
+
+    }
+
+    .events {
+
+        border: 5px outset rgb(33, 67, 70);
+        list-style-position: inside;
+        padding-bottom: 10px;
+        color: rgb(120, 116, 114);
+        white-space: pre-line;
+        text-align: start;
+        font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+    }
+
+    .log {
+        padding-bottom: 10px;
+        white-space: pre-line;
+        text-align: left;
+
+    }
+    
+    .card {
+      text-align: center;
       border: outset 5px rgb(43, 64, 66);
-      max-width: auto;
-      display: inline-block;
-      margin-top: 20px;
+      width: 400px;
+      display: block;
+      margin: auto;
       padding: 15px;
       box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5)
     }
 
     .switch {
       position: relative;
-      display: inline-block;
+      display: block;
       width: 110px;
       height: 38px;
+      margin: auto;
 
     }
 
@@ -189,46 +198,130 @@
 
 <body>
 
-  <div class='card'><span class='building'> BUILDING A</span><br><span class='unitid'>garage1<br>2 of 4</span><span
+  <div class='card'><span class='unitid'>garage 1<br>2 of 4</span><span
       class='location'>Middle Light</span><span id='unit2'><label class='switch'><input type='checkbox'
           onchange='toggleCheckbox(this)' id='12'><span class='slider'></span></label></span><span class='bulb'
       id='bulb'>&#x23F1</span><span class='pockets' id='traffic'>garage1 - 1 of 4 <br> 192.168.10.15<br> <span
-        id='pocketid' class='rxID'>6</span> <br><span id='new_command' class='rxID'>alarm1 </span> <br> <span
-        id='rxtimestamp' class='rxtime'>2-1-2022 </span> </span><span class='unitinfo'> IP: 192.168.10.94<br>Mac:
-      C8:2B:96:08:D2:35<br>ID: bldgA-2-v2-garage1-2of4-switch</span><span class='uptime' id='status'>1 minute</span>
-        <ol id='mculist' class='mcus'>
-        <li>Garage1 - 1 of 4</li>
-        <li>Garage2 - 1 of 6</li>
-        <li>Lobby - 1 of 3</li>
-        <li>Courtyard 1 of 5</li>
-        <li>Entrance 1 of 5</li>
-        </ol>
+        id='pocketid' class='rxID'>5</span> <br><span id='new_command' class='rxID'>alarm1 </span> <br> <span
+        id='rxtimestamp' class='rxtime'>7 hours </span> </span><span
+      class='unitinfo'>192.168.10.94<br>C8:2B:96:08:D2:35<br>bldgA-2-v2-garage1-2of4-switch</span><span class='uptime'
+      id='localUptime'></span>
+    <ol id='mculist' class='mcus'>
+      <li class="mculist"> GARAGE1 - 1 OF 4 - 192.168.10.15
+        13 MINUTES - 2/2/2022 AT 23:40:24
+        ALARM2</li>
+      <li class="mculist">GARAGE1 - 1 OF 4
+        192.168.10.15
+        13 MINUTES
+        2/2/2022 AT 23:40:24
+        ALARM2</li>
+      <li class="mculist">GARAGE1 - 1 OF 4
+        192.168.10.15
+        13 MINUTES
+        2/2/2022 AT 23:40:24
+        ALARM2</li>
+    </ol>
+
+    
+    <ol id='unitlog' class='events'>
+      <li class='log'>GARAGE1 - 1 OF 4
+        192.168.10.15
+        ff:22:11:99:11:88
+        13 MINUTES - 2/2/2022 AT 23:40:24
+        ALARM2</li>
+      <li class='log'>GARAGE1 - 1 OF 4
+        192.168.10.15
+        ff:22:11:99:11:88
+        13 MINUTES - 2/2/2022 AT 23:40:24
+        ALARM2</li>
+      <li class='log'>>GARAGE1 - 1 OF 4
+        192.168.10.15
+        ff:22:11:99:11:88
+        13 MINUTES - 2/2/2022 AT 23:40:24
+        ALARM2</li>
+    </ol>
+
   </div>
 
+  
+
+
+
   <script>
+
+    window.mcuList = [];
+
+
+    function relayControl(element) {
+
+      var xhr = new XMLHttpRequest();
+      if (element.checked) {
+        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true);
+        light = document.getElementById('bulb');
+        light.innerHTML = "&#x1F4A1";
+        console.log("MCU Relay on remote");
+      }
+      else {
+        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=0", true);
+        light = document.getElementById('bulb');
+        light.innerHTML = "&#x23F1";
+        console.log("MCU Relay off remote");
+      }
+
+      xhr.send();
+
+    }
+
 
     function toggleCheckbox(element) {
       var xhr = new XMLHttpRequest();
       if (element.checked) {
-        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true); light = document.getElementById('bulb');
-        light.innerHTML = "&#x1F4A1"
+
+        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true);
+
+        light = document.getElementById('bulb');
+        light.innerHTML = "&#x1F4A1";
+        console.log("MCU Relay on");
+
       }
       else {
-        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=0", true); light = document.getElementById('bulb');
-        light.innerHTML = "&#x23F1"
+
+        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=0", true);
+
+        light = document.getElementById('bulb');
+        light.innerHTML = "&#x23F1";
+        console.log("MCU Relay off");
       }
+
       xhr.send();
     }
 
-
-     // Sort list of units
     function sortList(ol) {
-      var ul = document.getElementById(ol);
 
-          Array.from(ol.getElementsByTagName("LI"))
-            .sort((a, b) => a.textContent.localeCompare(b.textContent))
-            .forEach(li => ol.appendChild(li));
+      var checkListCount = document.getElementById("mculist").getElementsByTagName("li").length;
+      if (checkListCount == window.totalUnitsInList) {
+        console.log("MCU List NOT sorted");
+        return;
       }
+
+      var ol = document.getElementById(ol);
+
+      Array.from(ol.getElementsByTagName("LI"))
+        .sort((a, b) => a.textContent.localeCompare(b.textContent))
+        .forEach(li => ol.appendChild(li));
+
+      console.log("MCU List sorted");
+    }
+
+
+    function addMCU(ol, unitid) {
+
+      var mcuList = document.getElementById(ol);
+      var entry = document.createElement('li');
+      entry.appendChild(document.createTextNode(unitid + ' - ' + getDateTime()));
+      mcuList.appendChild(entry);
+
+    }
 
     function getDateTime() {
 
@@ -256,7 +349,6 @@
         }
       }, false);
 
-
       if (!!window.EventSource) {
         var source = new EventSource('/events');
 
@@ -273,19 +365,14 @@
           console.log("message", e.data);
         }, false);
 
-        source.addEventListener('updatetime', function (e) {
-          console.log("Updating local system running time", e.data);
-          document.getElementById("localUptime").innerHTML = obj.localtime;
-
-          }, false);
-
 
         source.addEventListener('updatetime', function (e) {
-          
-          console.log("Updating local system running time", e.data);
-          document.getElementById("localUptime").innerHTML = obj.operating;
+          console.log("Updating local up time", e.data);
+          var obj = JSON.parse(e.data);
+          document.getElementById("localUptime").innerHTML = obj.localTime;
 
         }, false);
+
 
         source.addEventListener('new_command', function (e) {
           console.log("new_command", e.data);
@@ -293,23 +380,51 @@
 
           document.getElementById("new_command").innerHTML = obj.new_command;
           document.getElementById("rxtimestamp").innerHTML = getDateTime();
-          document.getElementById("pocketid").innerHTML = obj.pocketid;
+          document.getElementById("pocketid").innerHTML = obj.pocketid + " - " + obj.msgsize;
 
-          var inputs = document.getElementsByTagName("input");
-          for(var i = 0; i < inputs.length; i++) {
-              if(inputs[i].type == "checkbox") {
-                  inputs[i].checked = true; 
-              }  
+          // Control the Relay Based on the command received
+          if (obj.new_command == 'lightOn') {
+
+            var inputs = document.getElementsByTagName("input");
+            for (var i = 0; i < inputs.length; i++) {
+              if (inputs[i].type == "checkbox") {
+                inputs[i].checked = true;
+                relayControl(inputs[i]);
+                console.log("Turning relay on command");
+              }
+            }
+
+          } else if (obj.new_command == 'lightOff') {
+
+            var inputs = document.getElementsByTagName("input");
+            for (var i = 0; i < inputs.length; i++) {
+              if (inputs[i].type == "checkbox") {
+                inputs[i].checked = false;
+                relayControl(inputs[i]);
+                console.log("Turning relay off command");
+              }
+            }
           }
 
-          sortList("mculist");
-          window.totalUnitsInList = document.getElementById("ul_o").getElementsByTagName("li").length;
-          console.log("Total units list: " + window.totalUnitsInList);
+          // Check if the unit is already in the MCU List
+          if (window.mcuList.includes(obj.id)) {
+
+            console.log('MCU ' + obj.id + ' already exists');
+
+          } else {
+
+            console.log('Adding MCU ' + obj.id + ' to list');
+            window.mcuList.push(obj.id);
+            addMCU("mculist", obj.unitname);
+            sortList("mculist")
+
+          }
+
+          window.totalUnitsInList = document.getElementById("mculist").getElementsByTagName("li").length;
+          console.log('MCUs added to list: ' + window.totalUnitsInList);
 
         }, false);
       }
-
-
     }
   </script>
 </body>
