@@ -2,431 +2,633 @@
 <html>
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset=â€œUTF-8â€>
-  <style>
-    body {
-      background: rgb(27, 30, 31);
-    }
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset=â€œUTF-8â€>
+    <style>
+        body {
+            background: rgb(27, 30, 31);
+        }
 
-    .unitid {
+         /*  CSS^Red Slider */
+        
+        .redslider {
+        margin-top: 20px;
+        display: compact;
+        -webkit-appearance: none;
+        width: 75%;
+        height: 15px;
+        background: #000;
+        outline: none;
+        border: 5px solid rgb(255, 0, 4);
+        border-radius: 8px;
+        }
 
-      font-weight: 500;
-      text-transform: uppercase;
-      color: rgb(68, 146, 248);
-      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-      font-size: 1.3rem;
-      text-align: center;
-      display: block;
-      padding-left: 10px;
-      padding-right: 10px;
-      line-height: 22px;
-      letter-spacing: 1.5px;
-    }
 
-    .location {
+        /* for chrome/safari */
+        .redslider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 40px;
+        height: 60px;
+        background: #000;
+        cursor: pointer;
+        border: 5px solid rgb(255, 0, 0);
+        border-radius: 15px;
+        }
 
-      margin-bottom: 10px;
-      line-height: 25px;
-      display: block;
-      font-weight: 400;
-      text-transform: uppercase;
-      color: rgb(22, 188, 230);
-      font-size: 1rem;
-      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-      letter-spacing: 1.5px;
-    }
+        /* for firefox */
+        .redslider::-moz-range-thumb {
+        width: 20px;
+        height: 60px;
+        background: #000;
+        cursor: pointer;
+        border: 5px solid rgb(255, 0, 0);
+        border-radius: 4px;
+        }
 
-    .bulb {
-      display: block;
-      text-align: center;
-      font-size: 3.8rem;
-      margin-bottom: 5px;
-    }
+        /*  CSS^ Green Slider */
 
-    .pockets {
-      letter-spacing: 1px;
-      padding: 5px;
-      border: 5px outset rgb(33, 63, 70);
-      font-weight: 500;
-      text-transform: uppercase;
-      color: rgb(211, 211, 39);
-      text-align: center;
-      display: block;
-      font-size: 1.1rem;
-      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-    }
+        .greenslider {
+        display: compact;
+        margin-top: 50px;
+        -webkit-appearance: none;
+        width: 75%;
+        height: 15px;
+        background: #000;
+        outline: none;
+        border: 5px solid lawngreen;
+        border-radius: 8px;
+        }
 
-    .rxID {
-      letter-spacing: 1.5px;
-      color: darkorange;
-    }
 
-    .rxtime {
-      font-size: 1.1rem;
-      letter-spacing: 1.2px;
-      color: rgb(216, 119, 0);
-    }
+        /* for chrome/safari */
+        .greenslider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 40px;
+        height: 60px;
+        background: #000;
+        cursor: pointer;
+        border: 5px solid lawngreen;
+        border-radius: 15px;
+        }
 
-    .unitinfo {
-      margin-top: 10px;
-      text-align: center;
-      border: 5px outset rgb(33, 67, 70);
-      display: block;
-      font-weight: 500;
-      padding: 10px;
-      text-transform: uppercase;
-      color: rgb(17, 108, 235);
-      font-size: 1.1rem;
-      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-    }
+        /* for firefox */
+        .greenslider::-moz-range-thumb {
+        width: 20px;
+        height: 60px;
+        background: #000;
+        cursor: pointer;
+        border: 5px solid lawngreen;
+        border-radius: 4px;
+        }
 
-    .uptime {
-      margin-top: 10px;
-      padding: 5px;
-      text-align: center;
-      border: 5px outset rgb(33, 67, 70);
-      font-weight: 500;
-      text-transform: uppercase;
-      color: rgb(27, 189, 140);
-      display: block;
-      font-size: 1rem;
-      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-    }
+        /*  CSS^ Blue Slider */
 
-    .mcus {
+        .blueslider {
+        display: compact;
+        margin-top: 50px;
+        margin-bottom: 25px;
+        -webkit-appearance: none;
+        width: 75%;
+        height: 15px;
+        background: #000;
+        outline: none;
+        border: 5px solid rgb(0, 0, 255);
+        border-radius: 8px;
+        }
 
-      margin-top: 10px;
-      padding-left: 40px;
-      padding-right: 10px;
-      text-align: start;
-      text-transform: uppercase;
-    
-      padding-top: 10px;
-      padding-bottom: 10px;
-      font-size: 1rem;
-      letter-spacing: 1px;
-      font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-      border: 5px outset rgb(33, 67, 70);
 
-    }
+        /* for chrome/safari */
+        .blueslider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 40px;
+        height: 60px;
+        background: #000;
+        cursor: pointer;
+        border: 5px solid rgb(0, 0, 255);
+        border-radius: 15px;
+        }
 
-    .mculist {
+        /* for firefox */
+        .blueslider::-moz-range-thumb {
+        width: 20px;
+        height: 60px;
+        background: #000;
+        cursor: pointer;
+        border: 5px solid rgb(0, 0, 255);
+        border-radius: 4px;
+        }
 
-        padding-bottom: 10px;
-        color: darkkhaki;
-        white-space: pre-line;
-        text-align: left;
 
-    }
+        .unitid {
 
-    .events {
+            /* CSS^unitid */
+            font-weight: 500;
+            text-transform: uppercase;
+            color: rgb(68, 146, 248);
+            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            font-size: 1.3rem;
+            text-align: center;
+            display: block;
+            padding-left: 10px;
+            padding-right: 10px;
+            line-height: 22px;
+            letter-spacing: 1.5px;
+        }
 
-        border: 5px outset rgb(33, 67, 70);
-        list-style-position: inside;
-        padding-bottom: 10px;
-        color: rgb(120, 116, 114);
-        white-space: pre-line;
-        text-align: start;
-        font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
-    }
+        .location {
 
-    .log {
-        padding-bottom: 10px;
-        white-space: pre-line;
-        text-align: left;
+            /* CSS^location */
+            margin-bottom: 10px;
+            line-height: 25px;
+            display: block;
+            font-weight: 400;
+            text-transform: uppercase;
+            color: rgb(22, 188, 230);
+            font-size: 1rem;
+            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            letter-spacing: 1.5px;
+        }
 
-    }
-    
-    .card {
-      text-align: center;
-      border: outset 5px rgb(43, 64, 66);
-      width: 400px;
-      display: block;
-      margin: auto;
-      padding: 15px;
-      box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5)
-    }
+        .bulb {
+            display: block;
+            text-align: center;
+            font-size: 3.8rem;
+            margin-bottom: 5px;
+        }
 
-    .switch {
-      position: relative;
-      display: block;
-      width: 110px;
-      height: 38px;
-      margin: auto;
+        .pockets {
 
-    }
+            /* CSS^pockets */
+            letter-spacing: 1px;
+            padding: 5px;
+            border: 5px outset rgb(33, 63, 70);
+            font-weight: 500;
+            text-transform: uppercase;
+            color: rgb(211, 211, 39);
+            text-align: center;
+            display: block;
+            font-size: 1.1rem;
+            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+        }
 
-    .switch input {
-      display: none
-    }
+        .rxID {
+            letter-spacing: 1.5px;
+            color: darkorange;
+        }
 
-    .slider {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgb(243, 188, 188);
-      border-radius: 34px
-    }
+        .rxtime {
+            font-size: 1.1rem;
+            letter-spacing: 1.2px;
+            color: rgb(216, 119, 0);
+        }
 
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 22px;
-      width: 42px;
-      left: 8px;
-      bottom: 8px;
-      background-color: rgb(15, 108, 131);
-      -webkit-transition: .4s;
-      transition: .4s;
-      border-radius: 48px
-    }
+        .unitinfo {
 
-    input:checked+.slider {
-      background-color: #21f3d0
-    }
+            /* CSS^unitinfo */
+            margin-top: 10px;
+            text-align: center;
+            border: 5px outset rgb(33, 67, 70);
+            display: block;
+            font-weight: 500;
+            padding: 10px;
+            text-transform: uppercase;
+            color: rgb(68, 146, 248);
+            font-size: 1.1rem;
+            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+        }
 
-    input:checked+.slider:before {
-      -webkit-transform: translateX(42px);
-      -ms-transform: translateX(42px);
-      transform: translateX(42px)
-    }
-  </style>
+        .uptime {
+
+            /* CSS^uptime */
+            margin-top: 10px;
+            padding: 5px;
+            text-align: center;
+            border: 5px outset rgb(33, 67, 70);
+            font-weight: 500;
+            text-transform: uppercase;
+            color: rgb(27, 189, 140);
+            display: block;
+            font-size: 1rem;
+            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+        }
+
+        .mcus {
+
+            /* CSS^mcus */
+
+            margin-top: 10px;
+            padding-left: 40px;
+            padding-right: 10px;
+            text-align: start;
+            text-transform: uppercase;
+
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            border: 5px outset rgb(33, 67, 70);
+
+        }
+
+        .mculist {
+
+            /* CSS^MCU List */
+            padding-bottom: 10px;
+            color: darkkhaki;
+            white-space: pre-line;
+            text-align: left;
+
+        }
+
+        .events {
+
+            /* CSS^events */
+            border: 5px outset rgb(33, 67, 70);
+            list-style-position: inside;
+            padding-bottom: 10px;
+            color: rgb(120, 116, 114);
+            white-space: pre-line;
+            text-align: start;
+            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+        }
+
+        .log {
+
+            /* CSS^log */
+            padding-bottom: 10px;
+            white-space: pre-line;
+            text-align: left;
+
+        }
+ 
+
+        .card {
+
+            /* CSS^card */
+            text-align: center;
+            border: outset 5px rgb(43, 64, 66);
+            display: block;
+            margin: auto;
+            padding: 15px;
+            box-shadow: 2px 2px 12px 1px rgba(140, 140, 140, .5)
+        }
+
+        .switch {
+
+            /* CSS^Switch */
+            position: relative;
+            display: block;
+            width: 250px;
+            height: 38px;
+            margin: auto;
+
+        }
+
+        .switch input {
+            display: none
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgb(243, 188, 188);
+            border-radius: 34px
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 40px;
+            left: 8px;
+            bottom: 8px;
+            background-color: rgb(28, 155, 187);
+            transition: .6s;
+            border-radius: 48px
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(192px)
+        }
+    </style>
+
 </head>
 
 <body>
 
-  <div class='card'><span class='unitid'>garage 1<br>2 of 4</span><span
-      class='location'>Middle Light</span><span id='unit2'><label class='switch'><input type='checkbox'
-          onchange='toggleCheckbox(this)' id='12'><span class='slider'></span></label></span><span class='bulb'
-      id='bulb'>&#x23F1</span><span class='pockets' id='traffic'>garage1 - 1 of 4 <br> 192.168.10.15<br> <span
-        id='pocketid' class='rxID'>5</span> <br><span id='new_command' class='rxID'>alarm1 </span> <br> <span
-        id='rxtimestamp' class='rxtime'>7 hours </span> </span><span
-      class='unitinfo'>192.168.10.94<br>C8:2B:96:08:D2:35<br>bldgA-2-v2-garage1-2of4-switch</span><span class='uptime'
-      id='localUptime'></span>
-    <ol id='mculist' class='mcus'>
-      <li class="mculist"> GARAGE1 - 1 OF 4 - 192.168.10.15
-        13 MINUTES - 2/2/2022 AT 23:40:24
-        ALARM2</li>
-      <li class="mculist">GARAGE1 - 1 OF 4
-        192.168.10.15
-        13 MINUTES
-        2/2/2022 AT 23:40:24
-        ALARM2</li>
-      <li class="mculist">GARAGE1 - 1 OF 4
-        192.168.10.15
-        13 MINUTES
-        2/2/2022 AT 23:40:24
-        ALARM2</li>
-    </ol>
+    <div class='card'><span class='unitid'>garage1<br>1 of 4</span><span class='location'>Light next to water
+            heaters</span><span id='unit1'><label class='switch'><input type='checkbox' onchange='toggleCheckbox(this)'
+                    id='12'><span id='change' class='slider'
+                    style='background-color: rgb(0,0,0)'></span></label></span><span class='bulb'
+            id='bulb'>&#x23F1</span>
+            
+            <input class='redslider' type='range' id='slideRed' min='0' max='255' oninput='changeRed(this.value)' onchange='updateNeoPixel()' value='0'>
+        
+            <input class='greenslider' type='range' id='slideGreen' min='0' max='255' oninput='changeGreen(this.value)' onchange='updateNeoPixel()' value='0'>
+            
+            <input class='blueslider' type='range' id='slideBlue' min='0' max='255' oninput='changeBlue(this.value)' onchange='updateNeoPixel()' value='0'>
+        
+        
+        <span class='pockets' id='traffic'> <span id='unitname'></span> <br> <span id='unitip'></span> <br> <span
+                id='pocketid' class='rxID'>0</span> <br><span id='new_command' class='rxID'> </span> <br> <span
+                id='rxtimestamp' class='rxtime'> </span> </span><span class='uptime' id='localUptime'></span>
+        <ol id='mculist' class='mcus'> </ol><span
+            class='unitinfo'>192.168.10.31<br>50:02:91:67:F9:96<br>BA-1-v1-garage1-1of4-433</span>
+        <ol id='unitlog' class='events'> </ol>
+    </div>
 
-    
-    <ol id='unitlog' class='events'>
-      <li class='log'>GARAGE1 - 1 OF 4
-        192.168.10.15
-        ff:22:11:99:11:88
-        13 MINUTES - 2/2/2022 AT 23:40:24
-        ALARM2</li>
-      <li class='log'>GARAGE1 - 1 OF 4
-        192.168.10.15
-        ff:22:11:99:11:88
-        13 MINUTES - 2/2/2022 AT 23:40:24
-        ALARM2</li>
-      <li class='log'>>GARAGE1 - 1 OF 4
-        192.168.10.15
-        ff:22:11:99:11:88
-        13 MINUTES - 2/2/2022 AT 23:40:24
-        ALARM2</li>
-    </ol>
+    <script>
 
-  </div>
+        //Java^Globals
 
-  
+        window.mcuList = [];
+        window.totalEventsInList = 0;
 
 
+        //Java^RGB Sliders
 
-  <script>
-
-    window.mcuList = [];
-
-
-    function relayControl(element) {
-
-      var xhr = new XMLHttpRequest();
-      if (element.checked) {
-        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true);
-        light = document.getElementById('bulb');
-        light.innerHTML = "&#x1F4A1";
-        console.log("MCU Relay on remote");
-      }
-      else {
-        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=0", true);
-        light = document.getElementById('bulb');
-        light.innerHTML = "&#x23F1";
-        console.log("MCU Relay off remote");
-      }
-
-      xhr.send();
-
-    }
-
-
-    function toggleCheckbox(element) {
-      var xhr = new XMLHttpRequest();
-      if (element.checked) {
-
-        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true);
-
-        light = document.getElementById('bulb');
-        light.innerHTML = "&#x1F4A1";
-        console.log("MCU Relay on");
-
-      }
-      else {
-
-        xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=0", true);
-
-        light = document.getElementById('bulb');
-        light.innerHTML = "&#x23F1";
-        console.log("MCU Relay off");
-      }
-
-      xhr.send();
-    }
-
-    function sortList(ol) {
-
-      var checkListCount = document.getElementById("mculist").getElementsByTagName("li").length;
-      if (checkListCount == window.totalUnitsInList) {
-        console.log("MCU List NOT sorted");
-        return;
-      }
-
-      var ol = document.getElementById(ol);
-
-      Array.from(ol.getElementsByTagName("LI"))
-        .sort((a, b) => a.textContent.localeCompare(b.textContent))
-        .forEach(li => ol.appendChild(li));
-
-      console.log("MCU List sorted");
-    }
-
-
-    function addMCU(ol, unitid) {
-
-      var mcuList = document.getElementById(ol);
-      var entry = document.createElement('li');
-      entry.appendChild(document.createTextNode(unitid + ' - ' + getDateTime()));
-      mcuList.appendChild(entry);
-
-    }
-
-    function getDateTime() {
-
-      var currentdate = new Date();
-      var datetime =
-        (currentdate.getMonth() + 1 + "/"
-          + currentdate.getDate()) + "/"
-        + currentdate.getFullYear() + " at "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds();
-      return datetime;
-
-    }
-
-    if (!!window.EventSource) {
-      var source = new EventSource('/events');
-
-      source.addEventListener('open', function (e) {
-        console.log("Events Connected");
-      }, false);
-      source.addEventListener('error', function (e) {
-        if (e.target.readyState != EventSource.OPEN) {
-          console.log("Events Disconnected");
+        function changeRed(value) {
+            document.getElementById('valRed').innerHTML = value;
+            changeAll();
         }
-      }, false);
+        function changeGreen(value) {
+            document.getElementById('valGreen').innerHTML = value;
+            changeAll();
+        }
+        function changeBlue(value) {
+            document.getElementById('valBlue').innerHTML = value;
+            changeAll();
+        }
 
-      if (!!window.EventSource) {
-        var source = new EventSource('/events');
+        function changeAll() {
 
-        source.addEventListener('open', function (e) {
-          console.log("Events Connected");
-        }, false);
-        source.addEventListener('error', function (e) {
-          if (e.target.readyState != EventSource.OPEN) {
-            console.log("Events Disconnected");
-          }
-        }, false);
+            console.log("Updating neopixel UI");
+            var r = document.getElementById('valRed').innerHTML;
+            var g = document.getElementById('valGreen').innerHTML;
+            var b = document.getElementById('valBlue').innerHTML;
+            document.getElementById('change').style.backgroundColor = "rgb(" + r + "," + g + "," + b + ")";
+        }
 
-        source.addEventListener('message', function (e) {
-          console.log("message", e.data);
-        }, false);
+        function relayControl(element) {
 
-
-        source.addEventListener('updatetime', function (e) {
-          console.log("Updating local up time", e.data);
-          var obj = JSON.parse(e.data);
-          document.getElementById("localUptime").innerHTML = obj.localTime;
-
-        }, false);
-
-
-        source.addEventListener('new_command', function (e) {
-          console.log("new_command", e.data);
-          var obj = JSON.parse(e.data);
-
-          document.getElementById("new_command").innerHTML = obj.new_command;
-          document.getElementById("rxtimestamp").innerHTML = getDateTime();
-          document.getElementById("pocketid").innerHTML = obj.pocketid + " - " + obj.msgsize;
-
-          // Control the Relay Based on the command received
-          if (obj.new_command == 'lightOn') {
-
-            var inputs = document.getElementsByTagName("input");
-            for (var i = 0; i < inputs.length; i++) {
-              if (inputs[i].type == "checkbox") {
-                inputs[i].checked = true;
-                relayControl(inputs[i]);
-                console.log("Turning relay on command");
-              }
+            //Java^Relay Control
+            var xhr = new XMLHttpRequest();
+            if (element.checked) {
+                xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true);
+                light = document.getElementById('bulb');
+                light.innerHTML = "&#x1F4A1";
+                console.log("MCU Relay on remote");
+            }
+            else {
+                xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=0", true);
+                light = document.getElementById('bulb');
+                light.innerHTML = "&#x23F1";
+                console.log("MCU Relay off remote");
             }
 
-          } else if (obj.new_command == 'lightOff') {
+            xhr.send();
 
-            var inputs = document.getElementsByTagName("input");
-            for (var i = 0; i < inputs.length; i++) {
-              if (inputs[i].type == "checkbox") {
-                inputs[i].checked = false;
-                relayControl(inputs[i]);
-                console.log("Turning relay off command");
-              }
+        }
+
+        function updateNeoPixel() {
+
+            //Java^ NeopPixel update
+
+            var r = document.getElementById('valRed').innerHTML;
+            var g = document.getElementById('valGreen').innerHTML;
+            var b = document.getElementById('valBlue').innerHTML;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/neopixel?red=" + r + "&green=" + g + "&blue=" + b, true);
+            xhr.send();
+            console.log("neo MCU: red = " + r + " - " + " - green = " + g + " - blue = " + b);
+
+        }
+
+
+        function toggleCheckbox(element) {
+
+            //Java^toggleCheckBox
+            var xhr = new XMLHttpRequest();
+            if (element.checked) {
+
+                xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true);
+
+                light = document.getElementById('bulb');
+                light.innerHTML = "&#x1F4A1";
+                console.log("MCU Relay on");
+
+                document.getElementById("redS").style.display = "block";
+                document.getElementById("greenS").style.display = "block";
+                document.getElementById("blueS").style.display = "block";
+
             }
-          }
+            else {
 
-          // Check if the unit is already in the MCU List
-          if (window.mcuList.includes(obj.id)) {
+                xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=0", true);
 
-            console.log('MCU ' + obj.id + ' already exists');
+                light = document.getElementById('bulb');
+                light.innerHTML = "&#x23F1";
+                console.log("MCU Relay off");
 
-          } else {
+                document.getElementById("redS").style.display = "none";
+                document.getElementById("greenS").style.display = "none";
+                document.getElementById("blueS").style.display = "none";
+            }
 
-            console.log('Adding MCU ' + obj.id + ' to list');
-            window.mcuList.push(obj.id);
-            addMCU("mculist", obj.unitname);
-            sortList("mculist")
+            xhr.send();
+        }
 
-          }
+        function sortList(ol) {
 
-          window.totalUnitsInList = document.getElementById("mculist").getElementsByTagName("li").length;
-          console.log('MCUs added to list: ' + window.totalUnitsInList);
+            //Java^sortList
+            var checkListCount = document.getElementById("mculist").getElementsByTagName("li").length;
+            if (checkListCount == window.totalUnitsInList) {
+                console.log("MCU List NOT sorted");
+                return;
+            }
 
-        }, false);
-      }
-    }
-  </script>
+            var ol = document.getElementById(ol);
+
+            Array.from(ol.getElementsByTagName("LI"))
+                .sort((a, b) => a.textContent.localeCompare(b.textContent))
+                .forEach(li => ol.appendChild(li));
+            console.log("MCU List sorted");
+        }
+
+        function addMCU(ol, unitid, mcuid) {
+
+            //Java^addMCU
+            var mcuList = document.getElementById(ol);
+            var entry = document.createElement('li');
+            entry.setAttribute('id', 'mcu' + mcuid);
+            entry.setAttribute('class', 'mculist');
+            entry.appendChild(document.createTextNode(unitid + ' - ' + getDateTime()));
+            mcuList.appendChild(entry);
+
+        }
+
+        function addLog(ol, unitname, ip, mac, evtime, command, pocketid, eventnumber) {
+
+            //Java^addLog
+            var eventList = document.getElementById(ol);
+            var entry = document.createElement('li');
+            entry.setAttribute('class', 'log');
+
+            entry.appendChild(document.createTextNode(unitname + '\r\n' + ip + '\r\n' + mac + '\r\n' + evtime + '\r\n' + command + ' ->' + pocketid + ' - ' + (eventnumber + 1)));
+            eventList.insertBefore(entry, eventList.firstChild);
+
+        }
+
+        function getDateTime() {
+
+            //Java^getDateTime
+            var currentdate = new Date();
+            var datetime =
+                (currentdate.getMonth() + 1 + "/"
+                    + currentdate.getDate()) + "/"
+                + currentdate.getFullYear() + " at "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+            return datetime;
+
+        }
+
+        if (!!window.EventSource) {
+
+            //Java^Events Source
+            var source = new EventSource('/events');
+
+            source.addEventListener('open', function (e) {
+                console.log("Events Connected");
+            }, false);
+
+            source.addEventListener('error', function (e) {
+                if (e.target.readyState != EventSource.OPEN) {
+                    console.log("Events Disconnected");
+                }
+            }, false);
+
+            if (!!window.EventSource) {
+
+                var source = new EventSource('/events');
+
+                source.addEventListener('open', function (e) {
+                    console.log("Events Connected");
+                }, false);
+
+                source.addEventListener('error', function (e) {
+                    if (e.target.readyState != EventSource.OPEN) {
+                        console.log("Events Disconnected");
+                    }
+                }, false);
+
+                source.addEventListener('message', function (e) {
+                    console.log("message", e.data);
+                }, false);
+
+
+                source.addEventListener('updatetime', function (e) {
+                    // Java^UpdateTime
+                    console.log("Updating local up time", e.data);
+                    var obj = JSON.parse(e.data);
+                    document.getElementById("localUptime").innerHTML = obj.localTime;
+
+                }, false);
+
+                source.addEventListener('rgbupdate', function (e) {
+
+                    // Java^Update RGB UI
+                    console.log("Updating RGB Controls", e.data);
+
+                    var obj = JSON.parse(e.data);
+                    var mcuRemote = "unit" + obj.id;
+                    var mcuLocal = document.getElementById("unit" + obj.id)
+
+                    if (mcuRemote != mcuLocal) {
+
+                        console.log("Updating RGB Sliders", e.data);
+                        document.getElementById("slideRed").value = obj.red;
+                        document.getElementById("slideGreen").value = obj.green;
+                        document.getElementById("slideBlue").value = obj.blue;
+
+                    }
+
+                }, false);
+
+
+                source.addEventListener('new_command', function (e) {
+
+                    //Java^new_command
+                    console.log("new_command", e.data);
+                    var obj = JSON.parse(e.data);
+
+                    document.getElementById("unitname").innerHTML = obj.unitname;
+                    document.getElementById("unitip").innerHTML = obj.ip;
+                    document.getElementById("new_command").innerHTML = obj.new_command;
+                    document.getElementById("rxtimestamp").innerHTML = getDateTime();
+                    document.getElementById("pocketid").innerHTML = obj.pocketid + " - " + obj.msgsize;
+
+                    // Control the Relay Based on the command received
+                    if (obj.new_command == 'lightOn') {
+
+                        var inputs = document.getElementsByTagName("input");
+                        for (var i = 0; i < inputs.length; i++) {
+                            if (inputs[i].type == "checkbox") {
+                                inputs[i].checked = true;
+                                relayControl(inputs[i]);
+                                console.log("Turning relay on command");
+                            }
+                        }
+
+                    } else if (obj.new_command == 'lightOff') {
+
+                        var inputs = document.getElementsByTagName("input");
+                        for (var i = 0; i < inputs.length; i++) {
+                            if (inputs[i].type == "checkbox") {
+                                inputs[i].checked = false;
+                                relayControl(inputs[i]);
+                                console.log("Turning relay off command");
+                            }
+                        }
+                    }
+
+                    // Java^Add Log
+                    window.totalEventsInList = document.getElementById("unitlog").getElementsByTagName("li").length;
+                    console.log('Total events in list: ' + window.totalEventsInList);
+                    addLog("unitlog", obj.unitname, obj.ip, obj.mac, getDateTime(), obj.new_command, obj.pocketid + " - " + obj.msgsize, window.totalEventsInList);
+
+                    // Check if the unit is already in the MCU List
+                    if (window.mcuList.includes(obj.id)) {
+
+                        console.log('MCU ' + obj.id + ' already exists. Updating instead');
+                        document.getElementById('mcu' + obj.id).textContent = obj.unitname + '\r\n' + obj.ip + '\r\n' + obj.uptime + '\r\n' + getDateTime() + '\r\n' + obj.new_command;
+
+                    } else {
+
+                        console.log('Adding MCU ' + obj.id + ' to list');
+                        window.mcuList.push(obj.id);
+                        addMCU("mculist", obj.unitname, obj.id);
+                        sortList("mculist")
+
+                        window.totalUnitsInList = document.getElementById("mculist").getElementsByTagName("li").length;
+                        console.log('MCUs added to list: ' + window.totalUnitsInList);
+
+                    }
+
+                }, false);
+            }
+        }
+
+    </script>
 </body>
 
 </html>
