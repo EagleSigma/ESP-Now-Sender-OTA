@@ -121,7 +121,7 @@ const uint32_t msred = pixels.Color(255, 80, 24);
 // Alarm^Levels
 const char *neoAlertType[6] = {"guard", "movement", "watch", "warning", "lightwarning", "sonicalert"};
 int blinkSpeed[10] = {50, 1000, 1000, 1000, 500, 300, 200, 100, 200, 300};
-const uint32_t alertColor[10] = {purple, white, green, blue, cyan, orange, yellow, pink, msred, red};
+const uint32_t alertColor[10] = {white, green, yellow, red, cyan, orange, yellow, pink, msred, red};
 
 #elif NEOPIXEL == 0
 
@@ -184,7 +184,7 @@ unsigned int days = 0;
 #define RELAY_NO true
 #define NUM_RELAYS 1
 
-//Global^Web Events
+// Global^Web Events
 unsigned int relayGPIOs[NUM_RELAYS] = {12};
 const char *PARAM_INPUT_1 = "relay";
 const char *PARAM_INPUT_2 = "state";
@@ -192,13 +192,14 @@ const char *PARAM_INPUT_3 = "red";
 const char *PARAM_INPUT_4 = "green";
 const char *PARAM_INPUT_5 = "blue";
 const char *PARAM_INPUT_6 = "browserid";
-
+const char *PARAM_INPUT_7 = "alert";
+const char *PARAM_INPUT_8 = "siren";
 
 /* #endregion */
 
 /* #region [Functions]  */
 
-// Events Ping
+// Loop^Ping
 void EventsPing(unsigned int pingUpdateInterval)
 {
   // Calculate Uptime
@@ -421,27 +422,11 @@ void theaterChaseRainbow()
 void NeoPixel()
 {
 
-  if (colorswap == false)
-  {
-    return;
-  }
-
   switch (currentAlert)
   {
 
   case 10:
 
-    if (colorswap == false)
-    {
-      return;
-    }
-    // pixels.setPixelColor(0, alertColor[currentAlert]);
-    char alert[35];
-    strcpy(alert, "Changing current alert level to: ");
-    strcat(alert, String(currentAlert).c_str());
-    events.send(alert, NULL, millis());
-    pixels.show();
-    colorswap = false;
     break;
   case 9:
     if ((unsigned long)(millis() - theaterChasePreviousMillis) >= 2000)
@@ -486,39 +471,92 @@ void NeoPixel()
     }
     break;
   case 3:
-    if ((unsigned long)(millis() - theaterChasePreviousMillis) >= 2000)
-    {
-      theaterChasePreviousMillis = millis();
-      theaterChase(alertColor[currentAlert]);
-    }
-    break;
-  case 2:
-    if ((unsigned long)(millis() - theaterChasePreviousMillis) >= 2000)
-    {
-      theaterChasePreviousMillis = millis();
-      theaterChase(alertColor[currentAlert]);
-    }
-    break;
-  case 1:
+    // Alarm^Level 3
     if ((unsigned long)(millis() - pixelCyclesPreviousMillis) >= 2000)
     {
       pixelCyclesPreviousMillis = millis();
-      colorswap = !colorswap;
 
       if (colorswap)
       {
-        pixels.setPixelColor(0, pixels.Color(0, 15, 0));
+        pixels.setPixelColor(0, alertColor[currentAlert]);
+        pixels.show();
+        colorswap = false;
+
+        char alertmsg[20];
+        strcpy(alertmsg, "Red alart - ");
+        strcat(alertmsg, String(millis() / 1000).c_str());
+        events.send(alertmsg, NULL, millis());
       }
       else
       {
         pixels.setPixelColor(0, 0);
+        pixels.show();
+        colorswap = true;
       }
     }
-    pixels.show();
+  
+    break;
+  case 2:
+    // Alarm^Level 2
+    if ((unsigned long)(millis() - pixelCyclesPreviousMillis) >= 2000 && millis() != pixelCyclesPreviousMillis)
+    {
+      pixelCyclesPreviousMillis = millis();
+
+      if (colorswap)
+      {
+
+        pixels.setPixelColor(0, alertColor[currentAlert]);
+        pixels.show();
+        colorswap = false;
+
+        char alertmsg[20];
+        strcpy(alertmsg, "Yellow alart - ");
+        strcat(alertmsg, String(millis() / 1000).c_str());
+        events.send(alertmsg, NULL, millis());
+      }
+      else
+      {
+        pixels.setPixelColor(0, 0);
+        pixels.show();
+        colorswap = true;
+      }
+    }
+  
+    break;
+
+  case 1:
+
+    // Alarm^Level 1
+    if ((unsigned long)(millis() - pixelCyclesPreviousMillis) >= 2000 && millis() != pixelCyclesPreviousMillis)
+    {
+
+      pixelCyclesPreviousMillis = millis();
+
+      if (colorswap)
+      {
+
+        pixels.setPixelColor(0, alertColor[currentAlert]);
+        pixels.show();
+        colorswap = false;
+
+        char alertmsg[20];
+        strcpy(alertmsg, "Green alart - ");
+        strcat(alertmsg, String(millis() / 1000).c_str());
+        events.send(alertmsg, NULL, millis());
+      }
+      else
+      {
+        pixels.setPixelColor(0, 0);
+        pixels.show();
+        colorswap = true;
+      }
+    }
+    
+
     break;
   case 0:
     // Do Nothing
-
+    pixels.setPixelColor(0, 0);
     break;
 
   default:
@@ -682,12 +720,29 @@ const char relay_html2[] PROGMEM = R"rawliteral(
         body {
             background: rgb(27, 30, 31);
         }
- /*  CSS^Red Slider */
+
+
+        /*  CSS^Flash Button */
+
+        #flashbutton {
+
+            background-color: rgb(4, 91, 91);
+            display: block;
+            width: 65px;
+            height: 65px;
+            border-radius: 15px;
+            font-family: Arial;
+            font-size: 3rem;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /*  CSS^Red Slider */
         
         .redslider {
         margin-top: 20px;
         -webkit-appearance: none;
-        width: 75%;
+        width: 50%;
         height: 15px;
         background: #000;
         outline: none;
@@ -701,11 +756,11 @@ const char relay_html2[] PROGMEM = R"rawliteral(
         -webkit-appearance: none;
         appearance: none;
         width: 40px;
-        height: 60px;
+        height: 40px;
         background: #000;
         cursor: pointer;
         border: 5px solid rgb(255, 0, 0);
-        border-radius: 15px;
+        border-radius: 20px;
         }
 
         /* for firefox */
@@ -721,9 +776,9 @@ const char relay_html2[] PROGMEM = R"rawliteral(
         /*  CSS^ Green Slider */
 
         .greenslider {
-        margin-top: 50px;
+        margin-top: 20px;
         -webkit-appearance: none;
-        width: 75%;
+        width: 50%;
         height: 15px;
         background: #000;
         outline: none;
@@ -737,11 +792,11 @@ const char relay_html2[] PROGMEM = R"rawliteral(
         -webkit-appearance: none;
         appearance: none;
         width: 40px;
-        height: 60px;
+        height: 40px;
         background: #000;
         cursor: pointer;
         border: 5px solid lawngreen;
-        border-radius: 15px;
+        border-radius: 20px;
         }
 
         /* for firefox */
@@ -757,10 +812,10 @@ const char relay_html2[] PROGMEM = R"rawliteral(
         /*  CSS^ Blue Slider */
 
         .blueslider {
-        margin-top: 50px;
-        margin-bottom: 25px;
+        margin-top: 20px;
+        margin-bottom: 10px;
         -webkit-appearance: none;
-        width: 75%;
+        width: 50%;
         height: 15px;
         background: #000;
         outline: none;
@@ -774,11 +829,11 @@ const char relay_html2[] PROGMEM = R"rawliteral(
         -webkit-appearance: none;
         appearance: none;
         width: 40px;
-        height: 60px;
+        height: 40px;
         background: #000;
         cursor: pointer;
         border: 5px solid rgb(0, 0, 255);
-        border-radius: 15px;
+        border-radius: 20px;
         }
 
         /* for firefox */
@@ -797,7 +852,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             font-weight: 500;
             text-transform: uppercase;
             color: rgb(68, 146, 248);
-            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            font-family: Arial;
             font-size: 1.3rem;
             text-align: center;
             display: block;
@@ -817,15 +872,13 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             text-transform: uppercase;
             color: rgb(22, 188, 230);
             font-size: 1rem;
-            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            font-family: Arial;
             letter-spacing: 1.5px;
         }
 
         .bulb {
             display: block;
-            text-align: center;
-            font-size: 3.8rem;
-            margin-bottom: 5px;
+            font-size: 2.5rem;
         }
 
         .pockets {
@@ -840,7 +893,8 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             text-align: center;
             display: block;
             font-size: 1.1rem;
-            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            font-family: Arial;
+            margin-top: 12px;
         }
 
         .rxID {
@@ -866,7 +920,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             text-transform: uppercase;
             color: rgb(68, 146, 248);
             font-size: 1.1rem;
-            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            font-family: Arial;
         }
 
         .uptime {
@@ -881,7 +935,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             color: rgb(27, 189, 140);
             display: block;
             font-size: 1rem;
-            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            font-family: Arial;
         }
 
         .mcus {
@@ -898,7 +952,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             padding-bottom: 10px;
             font-size: 1rem;
             letter-spacing: 1px;
-            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            font-family: Arial;
             border: 5px outset rgb(33, 67, 70);
 
         }
@@ -922,7 +976,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             color: rgb(120, 116, 114);
             white-space: pre-line;
             text-align: start;
-            font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+            font-family: Arial;
         }
 
         .log {
@@ -951,7 +1005,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             position: relative;
             display: block;
             width: 250px;
-            height: 50px;
+            height: 52px;
             margin: auto;
 
         }
@@ -983,8 +1037,11 @@ const char relay_html2[] PROGMEM = R"rawliteral(
         }
 
         input:checked+.slider:before {
-            transform: translateX(185px)
+            transform: translateX(185px);
+            border: aqua solid 2px;
+
         }
+
               </style
             </head>
             <body>
@@ -993,14 +1050,65 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             
           <script>
 
-//Java^Globals
+//JS^Globals
 
           window.mcuList = [];
-          window.browserid=""; 
+          window.browserid="";
+          window.flashRate = 0; 
 window.totalEventsInList = 0;
 
+    //JS^flashAlert
+    function flashAlert(){
+    
+        window.flashRate++;
 
-// Java^Browser ID
+        updateFlashButton(window.flashrate);
+
+        //JSurl^flashAlert
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/flashalert?alert="+window.flashRate + "&browserid=" + window.browserid,  true);
+        xhr.send();
+    }
+
+     //JS^updateFlashButton
+    function updateFlashButton(){
+
+      var selector = parseInt(window.flashRate);
+      console.log("Updating Flash Button with level: " + selector);
+      switch (selector) {
+
+          case 3:
+
+              console.log('Red warning light');
+              document.getElementById("flashbutton").innerHTML = "&#x1F46E";
+              document.getElementById("flashbutton").style.background = "red";
+              break;
+
+          case 2:
+
+              console.log('Yellow warning light');
+              document.getElementById("flashbutton").innerHTML = "&#x1F526";
+              document.getElementById("flashbutton").style.background = "yellow";
+              break;
+
+          case 1:
+
+              console.log('Green warning light');
+              document.getElementById("flashbutton").innerHTML = "&#x1F4A1";
+              document.getElementById("flashbutton").style.background = "green"
+              break;
+
+          default:
+
+              console.log("Warning light Off");
+              window.flashRate = 0;
+              document.getElementById("flashbutton").innerHTML = "&#x1F6A6";
+              document.getElementById("flashbutton").style.background = "darkcyan";
+      }
+    }
+
+
+// JS^Browser ID
 function makeid(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -1014,11 +1122,11 @@ charactersLength));
 
 }
 
-//Java^RGB Sliders
+//JS^RGB Sliders
 
 function updateLightColor() {
 
-    console.log("Updating Light Color UI");
+    console.log("Updating Light Switch Color");
     var r = document.getElementById('slideRed').value;
     var g = document.getElementById('slideGreen').value;
     var b = document.getElementById('slideBlue').value;
@@ -1027,12 +1135,12 @@ function updateLightColor() {
 
 function relayControl(element) {
 
-    //Java^Relay Control
+    //JSurl^Relay Control
     var xhr = new XMLHttpRequest();
     if (element.checked) {
         xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true);
         light = document.getElementById('bulb');
-        light.innerHTML = "&#x1F4A1";
+        light.innerHTML = "&#x1F506";
         console.log("MCU Relay on remote");
     }
     else {
@@ -1048,7 +1156,7 @@ function relayControl(element) {
 
 function updateNeoPixel(){
 
-  //Java^ NeopPixel update
+  //JSurl^ NeopPixel update
 
   var r = document.getElementById('slideRed').value;
   var g = document.getElementById('slideGreen').value;
@@ -1058,6 +1166,16 @@ function updateNeoPixel(){
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "/neopixel?red=" + r + "&green=" + g + "&blue=" + b + "&browserid=" + webid,  true);
   xhr.send();
+
+  if (r == 0 && g == 0 && b == 0){
+
+    document.getElementById('bulb').innerHTML = "&#x23F1"
+  }else{
+
+    document.getElementById('bulb').innerHTML = "&#x1F506";
+
+  }
+
   console.log("neo MCU: red = " + r + " - " + " - green = " + g + " - blue = " + b );
 
 }
@@ -1065,7 +1183,7 @@ function updateNeoPixel(){
 
 function toggleCheckbox(element) {
 
-    //Java^toggleCheckBox
+    //JSurl^toggleCheckBox
     var xhr = new XMLHttpRequest();
 
     if (element.checked) {
@@ -1073,13 +1191,15 @@ function toggleCheckbox(element) {
         xhr.open("GET", "/relayupdate?relay=" + element.id + "&state=1", true);
 
         light = document.getElementById('bulb');
-        light.innerHTML = "&#x1F4A1";
+        light.innerHTML = "&#x1F506";
         console.log("MCU Relay on - " + element.checked);
 
         document.getElementById("slideRed").style.display = "inline-block";
         document.getElementById("slideGreen").style.display = "inline-block";
         document.getElementById("slideBlue").style.display = "inline-block";
+        document.getElementById("flashbutton").style.display = "block";
 
+        
 
     }
     else {
@@ -1093,6 +1213,7 @@ function toggleCheckbox(element) {
         document.getElementById("slideRed").style.display = "none";
         document.getElementById("slideGreen").style.display = "none";
         document.getElementById("slideBlue").style.display = "none";
+        document.getElementById("flashbutton").style.display = "none";
 
     }
 
@@ -1101,7 +1222,7 @@ function toggleCheckbox(element) {
 
 function sortList(ol) {
     
-    //Java^sortList
+    //JS^sortList
     var checkListCount = document.getElementById("mculist").getElementsByTagName("li").length;
     if (checkListCount == window.totalUnitsInList) {
         console.log("MCU List NOT sorted");
@@ -1118,7 +1239,7 @@ function sortList(ol) {
 
 function addMCU(ol, unitid, mcuid) {
 
-    //Java^addMCU
+    //JS^addMCU
     var mcuList = document.getElementById(ol);
     var entry = document.createElement('li');
     entry.setAttribute('id', 'mcu' + mcuid);
@@ -1130,7 +1251,7 @@ function addMCU(ol, unitid, mcuid) {
 
 function addLog(ol, unitname, ip, mac, evtime, command, pocketid, eventnumber) {
 
-    //Java^addLog
+    //JS^addLog
     var eventList = document.getElementById(ol);
     var entry = document.createElement('li');
     entry.setAttribute('class', 'log');
@@ -1142,7 +1263,7 @@ function addLog(ol, unitname, ip, mac, evtime, command, pocketid, eventnumber) {
 
 function getDateTime() {
 
-    //Java^getDateTime
+    //JS^getDateTime
     var currentdate = new Date();
     var datetime =
         (currentdate.getMonth() + 1 + "/"
@@ -1155,9 +1276,10 @@ function getDateTime() {
 
 }
 
+//JS^EventSource
+
 if (!!window.EventSource) {
-  
-  //Java^Events Source
+
     var source = new EventSource('/events');
 
     source.addEventListener('open', function (e) {
@@ -1170,152 +1292,159 @@ if (!!window.EventSource) {
         }
     }, false);
 
-    if (!!window.EventSource) {
-
-        var source = new EventSource('/events');
-
-        source.addEventListener('open', function (e) {
-            console.log("Events Connected");
-        }, false);
-
-        source.addEventListener('error', function (e) {
-            if (e.target.readyState != EventSource.OPEN) {
-                console.log("Events Disconnected");
-            }
-        }, false);
-
-        source.addEventListener('message', function (e) {
-            console.log("message", e.data);
-        }, false);
+    source.addEventListener('message', function (e) {
+        console.log("message", e.data);
+    }, false);
 
 
-        source.addEventListener('updatetime', function (e) {
-            // Java^UpdateTime
-            console.log("Updating local up time", e.data);
-            var obj = JSON.parse(e.data);
-            document.getElementById("localUptime").innerHTML = obj.localTime;
+    source.addEventListener('updatetime', function (e) {
+        // JSui^UpdateTime
+        console.log("Updating local up time", e.data);
+        var obj = JSON.parse(e.data);
+        document.getElementById("localUptime").innerHTML = obj.localTime;
 
-        }, false);
+    }, false);
 
-        source.addEventListener('rgbupdate', function (e) {
+    source.addEventListener('flashalert', function (e) {
 
-             // Java^Update RGB UI
+        // JSui^flashAlert
+        var obj = JSON.parse(e.data);
 
-            var obj = JSON.parse(e.data);
+        if (window.browserid == obj.browserid) {
 
-            console.log("Updating RGB Controls" + "\n" + "Local ID: " + window.browserid + "\n" + "ID Received: " + obj.browserid + "\n", e.data);
+            console.log("Duplicate browser id detected - Flash UI update cancelled");
+            return;
+        }
 
-            if (window.browserid == obj.browserid){
-
-              console.log("Duplicate browser id detected - RGB UI update cancelled");
-              return;
-            }
-
-            var relayState =  obj.relaystate
-            var power = document.getElementById(obj.relaypin)
-            
-            if(relayState==1){
-
-                console.log("Switch relay pin " + obj.relaypin + " to " + relayState);
-                power.checked = true;
-                document.getElementById("slideRed").style.display = "inline-block";
-                document.getElementById("slideGreen").style.display = "inline-block";
-                document.getElementById("slideBlue").style. display = "inline-block";
-                document.getElementById('bulb').innerHTML = "&#x1F4A1";
-                
-
-            }else{
-
-              console.log("Switch relay pin " + obj.relaypin + " to " + relayState);
-              document.getElementById("slideRed"). style. display = "none";
-              document.getElementById("slideGreen"). style. display = "none";
-              document.getElementById("slideBlue"). style. display = "none";
-              power.checked = false;
-              document.getElementById('bulb').innerHTML = "&#x23F1"
-
-            }
-              
-            console.log("Updating Light UI");
-
-            if (obj.red == 0 && obj.green == 0 && obj.blue == 0){
-
-                document.getElementById('bulb').innerHTML = "&#x23F1"
-            }
-
-            document.getElementById("slideRed").value = obj.red;
-            document.getElementById("slideGreen").value = obj.green;
-            document.getElementById("slideBlue").value = obj.blue;
-
-            updateLightColor();
+        window.flashRate = obj.flashLevel;
+        console.log("Flash alert received - alert level = " + window.flashRate);
+        updateFlashButton();
 
 
-        }, false);
+    }, false);
+
+    source.addEventListener('rgbupdate', function (e) {
+
+        // JSui^Update RGB UI
+
+        var obj = JSON.parse(e.data);
+
+        console.log("Updating RGB Controls" + "\n" + "Local ID: " + window.browserid + "\n" + "ID Received: " + obj.browserid + "\n", e.data);
+
+        if (window.browserid == obj.browserid) {
+
+            console.log("Duplicate browser id detected - RGB UI update cancelled");
+            return;
+        }
+
+        var relayState = obj.relaystate
+        var power = document.getElementById(obj.relaypin)
+
+        if (relayState == 1) {
+
+            console.log("Switch relay pin " + obj.relaypin + " to " + relayState);
+            power.checked = true;
+            document.getElementById("slideRed").style.display = "inline-block";
+            document.getElementById("slideGreen").style.display = "inline-block";
+            document.getElementById("slideBlue").style.display = "inline-block";
+            document.getElementById('bulb').innerHTML = "&#x1F506";
+            document.getElementById("flashbutton").style.display = "block";
 
 
-        source.addEventListener('new_command', function (e) {
 
-            //Java^new_command
-            console.log("new_command", e.data);
-            var obj = JSON.parse(e.data);
+        } else {
 
-            document.getElementById("unitname").innerHTML = obj.unitname;
-            document.getElementById("unitip").innerHTML = obj.ip;
-            document.getElementById("new_command").innerHTML = obj.new_command;
-            document.getElementById("rxtimestamp").innerHTML = getDateTime();
-            document.getElementById("pocketid").innerHTML = obj.pocketid + " - " + obj.msgsize;
+            console.log("Switch relay pin " + obj.relaypin + " to " + relayState);
+            document.getElementById("slideRed").style.display = "none";
+            document.getElementById("slideGreen").style.display = "none";
+            document.getElementById("slideBlue").style.display = "none";
+            document.getElementById("flashbutton").style.display = "none";
 
-            // Control the Relay Based on the command received
-            if (obj.new_command == 'lightOn') {
+            power.checked = false;
+            document.getElementById('bulb').innerHTML = "&#x23F1"
 
-                var inputs = document.getElementsByTagName("input");
-                for (var i = 0; i < inputs.length; i++) {
-                    if (inputs[i].type == "checkbox") {
-                        inputs[i].checked = true;
-                        relayControl(inputs[i]);
-                        console.log("Turning relay on command");
-                    }
-                }
+        }
 
-            } else if (obj.new_command == 'lightOff') {
+        console.log("Updating RGB UI");
 
-                var inputs = document.getElementsByTagName("input");
-                for (var i = 0; i < inputs.length; i++) {
-                    if (inputs[i].type == "checkbox") {
-                        inputs[i].checked = false;
-                        relayControl(inputs[i]);
-                        console.log("Turning relay off command");
-                    }
+        if (obj.red == 0 && obj.green == 0 && obj.blue == 0) {
+
+            document.getElementById('bulb').innerHTML = "&#x23F1"
+        }
+
+        document.getElementById("slideRed").value = obj.red;
+        document.getElementById("slideGreen").value = obj.green;
+        document.getElementById("slideBlue").value = obj.blue;
+
+        updateLightColor();
+
+
+    }, false);
+
+
+    source.addEventListener('new_command', function (e) {
+
+        //JSui^new_command
+        console.log("new_command", e.data);
+        var obj = JSON.parse(e.data);
+
+        document.getElementById("unitname").innerHTML = obj.unitname;
+        document.getElementById("unitip").innerHTML = obj.ip;
+        document.getElementById("new_command").innerHTML = obj.new_command;
+        document.getElementById("rxtimestamp").innerHTML = getDateTime();
+        document.getElementById("pocketid").innerHTML = obj.pocketid + " - " + obj.msgsize;
+
+        // Control the Relay Based on the command received
+        if (obj.new_command == 'lightOn') {
+
+            var inputs = document.getElementsByTagName("input");
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].type == "checkbox") {
+                    inputs[i].checked = true;
+                    relayControl(inputs[i]);
+                    console.log("Turning relay on command");
                 }
             }
 
-            // Java^Add Log
-            window.totalEventsInList = document.getElementById("unitlog").getElementsByTagName("li").length;
-            console.log('Total events in list: ' + window.totalEventsInList);
-            addLog("unitlog", obj.unitname, obj.ip, obj.mac, getDateTime(), obj.new_command, obj.pocketid + " - " + obj.msgsize, window.totalEventsInList);
+        } else if (obj.new_command == 'lightOff') {
 
-            // Check if the unit is already in the MCU List
-            if (window.mcuList.includes(obj.id)) {
-
-                console.log('MCU ' + obj.id + ' already exists. Updating instead');
-                document.getElementById('mcu' + obj.id).textContent = obj.unitname + '\r\n' + obj.ip + '\r\n' + obj.uptime + '\r\n' + getDateTime() + '\r\n' + obj.new_command;
-
-            } else {
-
-                console.log('Adding MCU ' + obj.id + ' to list');
-                window.mcuList.push(obj.id);
-                addMCU("mculist", obj.unitname, obj.id);
-                sortList("mculist")
-
-                window.totalUnitsInList = document.getElementById("mculist").getElementsByTagName("li").length;
-                console.log('MCUs added to list: ' + window.totalUnitsInList);
-
+            var inputs = document.getElementsByTagName("input");
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].type == "checkbox") {
+                    inputs[i].checked = false;
+                    relayControl(inputs[i]);
+                    console.log("Turning relay off command");
+                }
             }
+        }
 
-        }, false);
-    }
+        // JS^Add Log
+        window.totalEventsInList = document.getElementById("unitlog").getElementsByTagName("li").length;
+        console.log('Total events in list: ' + window.totalEventsInList);
+        addLog("unitlog", obj.unitname, obj.ip, obj.mac, getDateTime(), obj.new_command, obj.pocketid + " - " + obj.msgsize, window.totalEventsInList);
+
+        // Check if the unit is already in the MCU List
+        if (window.mcuList.includes(obj.id)) {
+
+            console.log('MCU ' + obj.id + ' already exists. Updating instead');
+            document.getElementById('mcu' + obj.id).textContent = obj.unitname + '\r\n' + obj.ip + '\r\n' + obj.uptime + '\r\n' + getDateTime() + '\r\n' + obj.new_command;
+
+        } else {
+
+            console.log('Adding MCU ' + obj.id + ' to list');
+            window.mcuList.push(obj.id);
+            addMCU("mculist", obj.unitname, obj.id);
+            sortList("mculist")
+
+            window.totalUnitsInList = document.getElementById("mculist").getElementsByTagName("li").length;
+            console.log('MCUs added to list: ' + window.totalUnitsInList);
+
+        }
+
+    }, false);
 }
 
-//Java^CreateUserID
+//JS^CreateUserID
 window.onload = makeid(10);
 
           </script>
@@ -1355,6 +1484,37 @@ String relayState(int numRelay)
   return "";
 }
 
+String alertIcon(int level)
+{
+
+  String emoji;
+
+  switch (level)
+  {
+
+  case 3:
+
+    emoji = "&#x1F46E";
+    break;
+
+  case 2:
+
+    emoji = "&#x1F526";
+    break;
+
+  case 1:
+
+    emoji = "&#x1F4A1";
+
+    break;
+
+  default:
+
+    emoji = "&#x1F6A6";
+  }
+
+  return emoji;
+}
 // Unit UI
 String processor2(const String &var)
 {
@@ -1375,10 +1535,9 @@ String processor2(const String &var)
     for (int i = 1; i <= NUM_RELAYS; i++)
     {
 
-      // Web-UI^ Relay Control
+      // Web-UI^ Light Control
       String relayStateValue = relayState(i);
-      buttons += "<span id='unit" + String(BOARD) + "'><label class='switch'><input type='checkbox' onchange='toggleCheckbox(this)' id='" + String(relayGPIOs[i - 1]) + "'" + relayStateValue + "><span id='lightcolor' class='slider' style='background-color: rgb(" + String(redPixel) + "," + String(greenPixel) + "," + String(bluePixel) + "); border: aqua solid 2px' ></span></label></span>";
-      buttons += "<span class='bulb' id='bulb'>" + String(digitalRead(relayGPIOs[NUM_RELAYS - 1]) ? "&#x1F4A1" : "&#x23F1") + "</span>";
+      buttons += "<span id='unit" + String(BOARD) + "'><label class='switch'> <input type='checkbox' onchange='toggleCheckbox(this)' id='" + String(relayGPIOs[i - 1]) + "'" + relayStateValue + "><span id='lightcolor' class='slider' style='background-color: rgb(" + String(redPixel) + "," + String(greenPixel) + "," + String(bluePixel) + ")'>" + "<span class='bulb' id='bulb'>" + String(digitalRead(relayGPIOs[NUM_RELAYS - 1]) ? "&#x1F506" : "&#x23F1") + "</span>" + "</span></label></span>";
     }
 
     if (NEOPIXEL == 1)
@@ -1386,11 +1545,15 @@ String processor2(const String &var)
 
       // LED Color Control Display
       String rgbDisplay = String(digitalRead(relayGPIOs[NUM_RELAYS - 1]) ? "inline-block" : "none");
+      String buttonDisplay = String(digitalRead(relayGPIOs[NUM_RELAYS - 1]) ? "block" : "none");
 
       // Web-UI^LED Sliders
       buttons += "<input class='redslider' type='range' id='slideRed' min='0' max='255' oninput='updateLightColor()'  onchange='updateNeoPixel()' value = '" + String(redPixel) + "' style='display:" + rgbDisplay + "'>";
       buttons += "<input class='greenslider' type='range' id='slideGreen' min='0' max='255' oninput='updateLightColor()' onchange='updateNeoPixel()' value = '" + String(greenPixel) + "' style='display:" + rgbDisplay + "'>";
       buttons += "<input class='blueslider' type='range' id='slideBlue' min='0' max='255'  oninput='updateLightColor()' onchange='updateNeoPixel()' value = '" + String(bluePixel) + "' style='display:" + rgbDisplay + "'>";
+
+      // Web-UI^Flash & Volume
+      buttons += "<span id='flashbutton' onclick='flashAlert()' style='display:" + buttonDisplay + "'>" + alertIcon(currentAlert) + "</span>";
     }
 
     // Web-UI^Traffic
@@ -1659,9 +1822,39 @@ void setup()
                 request->send(200, "text/plain", "Neopixels updated!");
               }; });
 
+  // WebURL^flashAlert
+  // Send a GET request to <ESP_IP>/alertlevel?alert=<inputParam7>&browserid=<inputParam6>
+  server.on("/flashalert", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+              String flashLevel;
+              String browserid;
+              // Get Message values and igonore parameters
+              if (request->hasParam(PARAM_INPUT_7))
+              {
+                
+                browserid = request->getParam(PARAM_INPUT_6)->value();
+                flashLevel = request->getParam(PARAM_INPUT_7)->value();
+
+                currentAlert = flashLevel.toInt();
+              
+                Debug("Flash Alert: ");
+                Debugln(currentAlert);
+                
+                // Update UI Data
+                JSONVar flashAlert;
+                flashAlert["flashLevel"] = String(currentAlert);
+                flashAlert["browserid"] = String(browserid);
+              
+                // WebEvent^ flashAlert
+                String jsonString = JSON.stringify(flashAlert);
+                events.send(jsonString.c_str(), "flashalert", millis());
+
+                request->send(200, "text/plain", "flash alert updated!");
+              }; });
+
   // Global^Web Events
   events.onConnect([](AsyncEventSourceClient *client)
-                  {
+                   {
 
         if(client->lastId()){
           Serial.printf("Client reconnected! Last message ID that it got is: %u\n", client->lastId());
@@ -1715,13 +1908,12 @@ void setup()
 void loop()
 {
 
-  // Events Ping
-  EventsPing(5000);
+  EventsPing(30000);
 
   // Uptime
   // RunningTime(60000);
 
-  // ESP-Now Pocket transmission
+  // Loop^ESP-Now Pocket transmission
   if ((millis() - espNowpreviousMillis) >= espNowinterval && sendNextPacket)
   {
 
@@ -1759,7 +1951,7 @@ void loop()
     Debugln(millis() / 1000);
   }
 
-  // Neopixel Control
+  // Loop^Neopixel Control
 #if NEOPIXEL == 1
   NeoPixel();
 #elif NEOPIXEL == 0
