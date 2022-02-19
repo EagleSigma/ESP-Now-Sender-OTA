@@ -1,6 +1,6 @@
 /* #region [Globals]  */
 
-// G^Libraries
+// GlobalVars^Libraries
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
@@ -13,7 +13,7 @@
 // Set time zone
 const char *Timezone = "PST8PDT,M3.2.0,M11.1.0";
 
-// G^Debug
+// GlobalVars^Debug
 #define DEBUG 1
 
 #if DEBUG == 1
@@ -33,7 +33,7 @@ const char *apssid = "Eaglet-Net";
 const char *appassword = "buildingA";
 const char *binVersion = "v1"; // Version
 
-// G^json & web
+// GlobalVars^json & web
 JSONVar board;
 JSONVar neoLight;
 AsyncWebServer server(80);
@@ -42,12 +42,12 @@ AsyncEventSource events("/events");
 // ESP Now
 #define BOARD 1
 
-// G^Neopixel Enable
+// GlobalVars^Neopixel Enable
 #define NEOPIXEL 1
 // NeoPixel brightness, 0 (min) to 255 (max)
 #define BRIGHTNESS 254
 
-// G^MCU
+// GlobalVars^MCU
 uint8_t broadcastAddress1[] = {0x50, 0x02, 0x91, 0x67, 0xF9, 0x96}; // Board 1
 uint8_t broadcastAddress2[] = {0xC8, 0x2B, 0x96, 0x08, 0xD2, 0x35}; // Board 2
 uint8_t broadcastAddress3[] = {0x84, 0x0D, 0x8E, 0x71, 0x12, 0x12}; // Board 3
@@ -75,7 +75,7 @@ const char *totalDevicesInServiceArea = "4";
 
 #endif
 
-// G^Neopixel effects
+// GlobalVars^Neopixel effects
 #if NEOPIXEL == 1
 
 unsigned long pixelsInterval = 500; // the time we need to wait
@@ -129,12 +129,12 @@ unsigned millisBlinkUpdate = 0;
 
 #endif
 
-// G^ Alarm
+// GlobalVars^ Alarm
 const char *alarmEvents[10] = {"motionDetected", "lightFlash", "flashChirp", "blinkLight", "chirpSound", "motionDetected", "alarm1", "alarm2", "alarm3", "alarm5"};
 const unsigned int alertLevel[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 unsigned int currentAlert = 0;
 
-// G^ESP-Now
+// GlobalVars^ESP-Now
 unsigned int txerrors = 0;
 unsigned int txPacketCounter = 0;
 unsigned int rxPacketCounter = 0;
@@ -144,7 +144,7 @@ unsigned long millisUptime = 0;
 unsigned long millisEventsPing = 0;
 bool sendNextPacket = true;
 
-// G^ESP-Now MSG
+// GlobalVars^ESP-Now MSG
 typedef struct struct_message
 {
   bool broadcast; // Delay between sending two ESPNOW data, unit: ms.
@@ -173,7 +173,7 @@ char greeting[100];
 char unitD[10];
 unsigned long uptimePreviousMillis = 0;
 
-// G^Uptime
+// GlobalVars^Uptime
 char uptime[50];
 unsigned int seconds = 0;
 unsigned int minutes = 0;
@@ -184,7 +184,7 @@ unsigned int days = 0;
 #define RELAY_NO true
 #define NUM_RELAYS 1
 
-// G^Web Events
+// GlobalVars^Web Events
 unsigned int relayGPIOs[NUM_RELAYS] = {12};
 const char *PARAM_INPUT_1 = "relay";
 const char *PARAM_INPUT_2 = "state";
