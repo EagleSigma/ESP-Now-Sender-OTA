@@ -1520,6 +1520,38 @@
 
     return "";
   }
+  // Web-UI^ alerttimer
+  int alertTimer(int level)
+  {
+
+    int alertTime;
+
+    switch (level)
+    {
+
+    case 3:
+
+      alertTime = 30;
+      break;
+
+    case 2:
+
+      alertTime = 120;
+      break;
+
+    case 1:
+
+      alertTime = 60;
+
+      break;
+
+    default:
+
+      alertTime = 30;
+    }
+
+    return alertTime;
+  }
   // Web-UI^alertIcon
   String alertIcon(int level)
   {
@@ -1562,17 +1594,17 @@
       // Build the Unit UI
       String buttons = "<div class='card'>";
 
-      // Web-UI^ Unit ID
+      // Web-UI-HTML^ Unit ID
       buttons += "<span class='unitid'>" + String(serviceArea) + "<br>" + String(BOARD) + " of " + String(totalDevicesInServiceArea) + "</span>";
 
-      // Web-UI^ Unit Location
+      // Web-UI-HTML^ Unit Location
       buttons += "<span class='location'>" + String(serviceLocation) + "</span>";
 
       // Unit Relay Control
       for (int i = 1; i <= NUM_RELAYS; i++)
       {
 
-        // Web-UI^ Light Control
+        // Web-UI-HTML^ Light Control
         String relayStateValue = relayState(i);
         buttons += "<span id='unit" + String(BOARD) + "'><label class='switch'> <input type='checkbox' onchange='toggleCheckbox(this)' id='" + String(relayGPIOs[i - 1]) + "'" + relayStateValue + "><span id='lightcolor' class='slider' style='background-color: rgb(" + String(redPixel) + "," + String(greenPixel) + "," + String(bluePixel) + ")'>" + "<span class='bulb' id='bulb'>" + String(digitalRead(relayGPIOs[NUM_RELAYS - 1]) ? "&#x1F506" : "&#x23F1") + "</span>" + "</span></label></span>";
       }
@@ -1584,28 +1616,28 @@
         String rgbDisplay = String(digitalRead(relayGPIOs[NUM_RELAYS - 1]) ? "inline-block" : "none");
         String buttonDisplay = String(digitalRead(relayGPIOs[NUM_RELAYS - 1]) ? "block" : "none");
 
-        // Web-UI^LED Sliders
+        // Web-UI-HTML^LED Sliders
         buttons += "<input class='redslider' type='range' id='slideRed' min='0' max='255' oninput='updateLightColor()'  onchange='updateNeoPixel()' value = '" + String(redPixel) + "' style='display:" + rgbDisplay + "'>";
         buttons += "<input class='greenslider' type='range' id='slideGreen' min='0' max='255' oninput='updateLightColor()' onchange='updateNeoPixel()' value = '" + String(greenPixel) + "' style='display:" + rgbDisplay + "'>";
         buttons += "<input class='blueslider' type='range' id='slideBlue' min='0' max='255'  oninput='updateLightColor()' onchange='updateNeoPixel()' value = '" + String(bluePixel) + "' style='display:" + rgbDisplay + "'>";
 
-        // Web-UI^Flash & Volume
+        // Web-UI-HTML^Flash & Volume
         buttons += "<span id='flashbutton' onclick='flashAlert()' style='display:" + buttonDisplay + "'>" + alertIcon(currentAlert) + "</span>";
       }
 
-      // Web-UI^Traffic
+      // Web-UI-HTML^Traffic
       buttons += "<span class='pockets' id='traffic'> <span id='unitname'>" + String(incomingMsg.unitname) + "</span> <br> <span id='unitip'>" + String(incomingMsg.ip) + "</span> <br> <span id='pocketid' class='rxID' >" + String(txPacketCounter) + "</span> <br>" + "<span id='new_command' onchange='newcmdreceived(this)' class='rxID' >" + String(incomingMsg.event) + " </span> <br> <span id='rxtimestamp' class='rxtime'>  </span> </span>";
 
-      // Web-UI^ Uptime
+      // Web-UI-HTML^ Uptime
       buttons += "<span class='uptime' id='localUptime'>" + String(uptime) + "</span>";
 
-      // Web-UI^ MCU List
+      // Web-UI-HTML^ MCU List
       buttons += "<ol id='mculist' class='mcus'> </ol>";
 
-      // Web-UI^ Info
+      // Web-UI-HTML^ Info
       buttons += "<span class='unitinfo'>" + WiFi.localIP().toString() + "<br>" + String(WiFi.macAddress().c_str()) + "<br>" + String(newhostname) + "</span>";
 
-      // Web-UI^ Log
+      // Web-UI-HTML^ Log
       buttons += "<ol id='unitlog' class='events'> </ol>";
 
       // Closing Tag for Card
