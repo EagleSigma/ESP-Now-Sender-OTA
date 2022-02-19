@@ -1,6 +1,6 @@
 /* #region [Globals]  */
 
-// Global^libs
+// G^Libraries
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
@@ -13,7 +13,7 @@
 // Set time zone
 const char *Timezone = "PST8PDT,M3.2.0,M11.1.0";
 
-// Global^Debug
+// G^Debug
 #define DEBUG 1
 
 #if DEBUG == 1
@@ -33,7 +33,7 @@ const char *apssid = "Eaglet-Net";
 const char *appassword = "buildingA";
 const char *binVersion = "v1"; // Version
 
-// Global^json & web
+// G^json & web
 JSONVar board;
 JSONVar neoLight;
 AsyncWebServer server(80);
@@ -41,13 +41,13 @@ AsyncEventSource events("/events");
 
 // ESP Now
 #define BOARD 1
-// Neopixel Enable
-#define NEOPIXEL 1
 
+// G^Neopixel Enable
+#define NEOPIXEL 1
 // NeoPixel brightness, 0 (min) to 255 (max)
 #define BRIGHTNESS 254
 
-// Global^MCU
+// G^MCU
 uint8_t broadcastAddress1[] = {0x50, 0x02, 0x91, 0x67, 0xF9, 0x96}; // Board 1
 uint8_t broadcastAddress2[] = {0xC8, 0x2B, 0x96, 0x08, 0xD2, 0x35}; // Board 2
 uint8_t broadcastAddress3[] = {0x84, 0x0D, 0x8E, 0x71, 0x12, 0x12}; // Board 3
@@ -75,7 +75,7 @@ const char *totalDevicesInServiceArea = "4";
 
 #endif
 
-// Global^Neopixel effects
+// G^Neopixel effects
 #if NEOPIXEL == 1
 
 unsigned long pixelsInterval = 500; // the time we need to wait
@@ -129,12 +129,12 @@ unsigned millisBlinkUpdate = 0;
 
 #endif
 
-// Alarm^Setup
+// G^ Alarm
 const char *alarmEvents[10] = {"motionDetected", "lightFlash", "flashChirp", "blinkLight", "chirpSound", "motionDetected", "alarm1", "alarm2", "alarm3", "alarm5"};
 const unsigned int alertLevel[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 unsigned int currentAlert = 0;
 
-// ESP-Now^Stats
+// G^ESP-Now
 unsigned int txerrors = 0;
 unsigned int txPacketCounter = 0;
 unsigned int rxPacketCounter = 0;
@@ -144,7 +144,7 @@ unsigned long millisUptime = 0;
 unsigned long millisEventsPing = 0;
 bool sendNextPacket = true;
 
-// ESP-Now^Def MSG
+// G^ESP-Now MSG
 typedef struct struct_message
 {
   bool broadcast; // Delay between sending two ESPNOW data, unit: ms.
@@ -171,10 +171,10 @@ const char *password = "silkysquash079";
 char newhostname[100];
 char greeting[100];
 char unitD[10];
-char uptime[50];
 unsigned long uptimePreviousMillis = 0;
 
-// Uptime
+// G^Uptime
+char uptime[50];
 unsigned int seconds = 0;
 unsigned int minutes = 0;
 unsigned int hours = 0;
@@ -184,7 +184,7 @@ unsigned int days = 0;
 #define RELAY_NO true
 #define NUM_RELAYS 1
 
-// Global^Web Events
+// G^Web Events
 unsigned int relayGPIOs[NUM_RELAYS] = {12};
 const char *PARAM_INPUT_1 = "relay";
 const char *PARAM_INPUT_2 = "state";
@@ -214,7 +214,7 @@ void EventsPing(unsigned int pingUpdateInterval)
   }
 }
 
-// Uptime
+// Stats^RunningTime
 void RunningTime(unsigned int updateInterval)
 {
 
@@ -307,7 +307,7 @@ void RunningTime(unsigned int updateInterval)
       strcat(uptime, minutes > 1 ? " minutes" : " minute");
     }
 
-    // Create Json object
+    // WE^updatetime
     JSONVar osTime;
     osTime["localTime"] = uptime;
     String jsonString = JSON.stringify(osTime);
@@ -494,7 +494,7 @@ void NeoPixel()
         colorswap = true;
       }
     }
-  
+
     break;
   case 2:
     // Alarm^Level 2
@@ -521,7 +521,7 @@ void NeoPixel()
         colorswap = true;
       }
     }
-  
+
     break;
 
   case 1:
@@ -551,7 +551,6 @@ void NeoPixel()
         colorswap = true;
       }
     }
-    
 
     break;
   case 0:
@@ -565,7 +564,7 @@ void NeoPixel()
 }
 
 #endif
-
+// Loop^blinkBuiltInLED
 void blinkBuiltInLED(unsigned long interval)
 {
 
@@ -616,7 +615,7 @@ void blinkBuiltInLED(unsigned long interval)
   }
 }
 
-// espNowCB^Print Incoming Msg
+// ESP-Now^Print Incoming Msg
 void PrintIncomingData()
 {
 
@@ -667,12 +666,9 @@ void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus)
   }
 }
 
-// Callback when data is received
+// espNowCB^OnDataRecv
 void OnDataRecv(uint8_t *mac, uint8_t *incomingData, uint8_t len)
 {
-
-  // espNowCB^OnDataRecv
-  return;
 
   // Copy Incoming message to Data Stuct for access
   memcpy(&incomingMsg, incomingData, sizeof(incomingMsg));
@@ -694,7 +690,7 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingData, uint8_t len)
   board["mac"] = macStr;
   board["msgsize"] = len;
 
-  // WebEvent^ new_command
+  // WE^ new_command
   String jsonString = JSON.stringify(board);
   events.send(jsonString.c_str(), "new_command", millis());
 
@@ -721,9 +717,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             background: rgb(27, 30, 31);
         }
 
-
         /*  CSS^Flash Button */
-
         #flashbutton {
 
             background-color: rgb(4, 91, 91);
@@ -977,6 +971,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             white-space: pre-line;
             text-align: start;
             font-family: Arial;
+            padding-top: 10px
         }
 
         .log {
@@ -985,6 +980,7 @@ const char relay_html2[] PROGMEM = R"rawliteral(
             padding-bottom: 10px;
             white-space: pre-line;
             text-align: left;
+            text-transform: uppercase;
 
         }
 
@@ -1052,16 +1048,54 @@ const char relay_html2[] PROGMEM = R"rawliteral(
 
 //JS^Globals
 
-          window.mcuList = [];
-          window.browserid="";
-          window.flashRate = 0; 
-window.totalEventsInList = 0;
+    window.mcuList = [];
+    window.browserid="";
+    window.flashRate = 0; 
+    window.totalEventsInList = 0;
+
+    lerp = function(a,b,u) {
+      return (1-u) * a + u * b;
+    };
+    
+    fade = function(element, property, start, end, duration) {
+        var interval = 10;
+        var steps = duration/interval;
+        var step_u = 1.0/steps;
+        var u = 0.0;
+        var theInterval = setInterval(function(){
+          if (u >= 1.0){ clearInterval(theInterval) }
+          var r = parseInt(lerp(start.r, end.r, u));
+          var g = parseInt(lerp(start.g, end.g, u));
+          var b = parseInt(lerp(start.b, end.b, u));
+          var colorname = 'rgb('+r+','+g+','+b+')';
+          el.style.setProperty(property, colorname);
+          u += step_u;
+        }, interval);
+    };
+    
+  //JS^highlightNewCommand
+  function highlightNewCommand(elem) {
+
+    var nc = document.getElementById(elem).innerHTML;
+    console.log("New command: " + nc + " highlighted");
+
+      el = document.getElementById(elem); // your element
+      property = 'color';       // fading property
+      startColor   = {r:  255, g:140, b:0};  // dark turquoise
+      endColor   = {r:  255, g:255, b:255};  // dark turquoise
+      fade(el,'color',startColor,endColor,1000);
+      
+      // fade back after 2 secs
+      setTimeout(function(){
+        fade(el,property,endColor,startColor,1000);
+      },2000);
+
+  }
 
     //JS^flashAlert
     function flashAlert(){
     
         window.flashRate++;
-
         updateFlashButton(window.flashrate);
 
         //JSurl^flashAlert
@@ -1123,7 +1157,6 @@ charactersLength));
 }
 
 //JS^RGB Sliders
-
 function updateLightColor() {
 
     console.log("Updating Light Switch Color");
@@ -1179,7 +1212,6 @@ function updateNeoPixel(){
   console.log("neo MCU: red = " + r + " - " + " - green = " + g + " - blue = " + b );
 
 }
-
 
 function toggleCheckbox(element) {
 
@@ -1276,8 +1308,8 @@ function getDateTime() {
 
 }
 
-//JS^EventSource
 
+//JS^EventSource
 if (!!window.EventSource) {
 
     var source = new EventSource('/events');
@@ -1416,6 +1448,7 @@ if (!!window.EventSource) {
                     console.log("Turning relay off command");
                 }
             }
+          
         }
 
         // JS^Add Log
@@ -1441,6 +1474,9 @@ if (!!window.EventSource) {
 
         }
 
+        //JS^highlite test
+        highlightNewCommand('new_command');
+
     }, false);
 }
 
@@ -1451,7 +1487,7 @@ window.onload = makeid(10);
             </body></html>
           )rawliteral";
 
-// Web-UI^Relay State
+// Web-UI^relayState
 String relayState(int numRelay)
 {
   if (RELAY_NO)
@@ -1483,7 +1519,7 @@ String relayState(int numRelay)
 
   return "";
 }
-
+// Web-UI^alertIcon
 String alertIcon(int level)
 {
 
@@ -1557,7 +1593,7 @@ String processor2(const String &var)
     }
 
     // Web-UI^Traffic
-    buttons += "<span class='pockets' id='traffic'> <span id='unitname'>" + String(incomingMsg.unitname) + "</span> <br> <span id='unitip'>" + String(incomingMsg.ip) + "</span> <br> <span id='pocketid' class='rxID' >" + String(txPacketCounter) + "</span> <br>" + "<span id='new_command' class='rxID' >" + String(incomingMsg.event) + " </span> <br> <span id='rxtimestamp' class='rxtime'>  </span> </span>";
+    buttons += "<span class='pockets' id='traffic'> <span id='unitname'>" + String(incomingMsg.unitname) + "</span> <br> <span id='unitip'>" + String(incomingMsg.ip) + "</span> <br> <span id='pocketid' class='rxID' >" + String(txPacketCounter) + "</span> <br>" + "<span id='new_command' onchange='newcmdreceived(this)' class='rxID' >" + String(incomingMsg.event) + " </span> <br> <span id='rxtimestamp' class='rxtime'>  </span> </span>";
 
     // Web-UI^ Uptime
     buttons += "<span class='uptime' id='localUptime'>" + String(uptime) + "</span>";
@@ -1582,7 +1618,6 @@ String processor2(const String &var)
   /* #endregion */
 }
 
-/* #region [Setup]  */
 void setup()
 {
 
@@ -1674,8 +1709,8 @@ void setup()
 
   AsyncElegantOTA.begin(&server, "twin", "peaks");
 
-  // WebURL^s
-  // WebURL^ WIFI Scan
+  // URL^s
+  // URL^ WIFI Scan
   server.on("/scan", HTTP_GET, [](AsyncWebServerRequest *request)
             {
                 String json = "[";
@@ -1703,11 +1738,11 @@ void setup()
                 request->send(200, "application/json", json);
                 json = String(); });
 
-  // WebURL^Stats
+  // URL^Stats
   server.on("/stats", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send_P(200, "text/html", relay_html2, processor2); });
 
-  // WebURL^relayupdate request to <ESP_IP>/update?relay=<inputMessage>&state=<inputMessage2>
+  // URL^relayupdate request to <ESP_IP>/update?relay=<inputMessage>&state=<inputMessage2>
   server.on("/relayupdate", HTTP_GET, [](AsyncWebServerRequest *request)
             {
                 String inputMessage;
@@ -1758,7 +1793,7 @@ void setup()
                 neoLight["green"] = greenPixel;
                 neoLight["blue"] = bluePixel;
               
-                // WebEvent^ neoupdate relay
+                // WE^ relay+rgb
                 String jsonString = JSON.stringify(neoLight);
                 events.send(jsonString.c_str(), "rgbupdate", millis());
 
@@ -1771,7 +1806,7 @@ void setup()
 
                 request->send(200, "text/plain", "Relay change ok"); });
 
-  // WebURL^neopixel
+  // URL^neopixel
   // Send a GET request to <ESP_IP>/neopixel?red=<inputMsg1>&green=<inputMsg2>&blue=<inputMsg3>&broserid=<inputMsg4>
   server.on("/neopixel", HTTP_GET, [](AsyncWebServerRequest *request)
             {
@@ -1815,14 +1850,14 @@ void setup()
                 neoLight["blue"] = bluePixel;
                 neoLight["browserid"] = inputBrowserid;
               
-                // WebEvent^ neoupdate
+                // WE^ neoupdate
                 String jsonString = JSON.stringify(neoLight);
                 events.send(jsonString.c_str(), "rgbupdate", millis());
 
                 request->send(200, "text/plain", "Neopixels updated!");
               }; });
 
-  // WebURL^flashAlert
+  // URL^flashAlert
   // Send a GET request to <ESP_IP>/alertlevel?alert=<inputParam7>&browserid=<inputParam6>
   server.on("/flashalert", HTTP_GET, [](AsyncWebServerRequest *request)
             {
@@ -1845,14 +1880,14 @@ void setup()
                 flashAlert["flashLevel"] = String(currentAlert);
                 flashAlert["browserid"] = String(browserid);
               
-                // WebEvent^ flashAlert
+                // WE^ flashAlert
                 String jsonString = JSON.stringify(flashAlert);
                 events.send(jsonString.c_str(), "flashalert", millis());
 
                 request->send(200, "text/plain", "flash alert updated!");
               }; });
 
-  // Global^Web Events
+  // WE^Reconnect
   events.onConnect([](AsyncEventSourceClient *client)
                    {
 
@@ -1910,8 +1945,8 @@ void loop()
 
   EventsPing(30000);
 
-  // Uptime
-  // RunningTime(60000);
+  // Loop^Uptime
+  RunningTime(30000);
 
   // Loop^ESP-Now Pocket transmission
   if ((millis() - espNowpreviousMillis) >= espNowinterval && sendNextPacket)
